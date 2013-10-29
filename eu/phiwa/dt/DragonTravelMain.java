@@ -133,6 +133,7 @@ public class DragonTravelMain extends JavaPlugin {
 		PluginDescriptionFile description = getDescription();
 		plugin = this;
 
+
 		// Add the new entity to Minecraft's (Craftbukkit's) entities
 		try {
 			Method method = EntityTypes.class.getDeclaredMethod("a", new Class[] { Class.class, String.class, int.class });
@@ -140,10 +141,17 @@ public class DragonTravelMain extends JavaPlugin {
 			method.invoke(EntityTypes.class, RyeDragon.class, "RyeDragon", 63);
 		}
 		catch (Exception e) {
-			logger.info("[DragonTravel] [Error] Could not register the RyeDragon-entity!");
-			e.printStackTrace();
-			pm.disablePlugin(this);
-			return;
+			// MCPC+ attempt
+			try {
+				Method method = EntityTypes.class.getDeclaredMethod("addMapping", new Class[] { Class.class, String.class, int.class });
+				method.invoke(EntityTypes.class, RyeDragon.class, "RyeDragon", 63);
+			}
+			catch (Exception e) {
+				logger.info("[DragonTravel] [Error] Could not register the RyeDragon-entity!");
+				e.printStackTrace();
+				pm.disablePlugin(this);
+				return;
+			}
 		}
 		
 		// Register EventListener
