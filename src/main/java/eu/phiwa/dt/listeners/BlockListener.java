@@ -13,7 +13,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.signs.Signs;
 
-
 public class BlockListener implements Listener {
 
 	DragonTravelMain plugin;
@@ -33,13 +32,12 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onSignChange(SignChangeEvent event) {
-
 		Player player = event.getPlayer();
 
 		if (!event.getLine(0).equalsIgnoreCase("[DragonTravel]"))
 			return;
 
-		if (!player.hasPermission("dt.admin.signs")) {
+		if (!player.hasPermission("dt.edit.signs")) {
 			player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.NoPermission"));
 			event.setCancelled(true);
 			return;
@@ -90,8 +88,7 @@ public class BlockListener implements Listener {
 		if (!lines[0].equalsIgnoreCase(ChatColor.GOLD + "DragonTravel"))
 			return;
 
-		if (!event.getPlayer().hasPermission("dt.admin.signs")) {
-
+		if (!event.getPlayer().hasPermission("dt.edit.signs")) {
 			event.getPlayer().sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.NoPermission"));
 			event.setCancelled(true);
 			return;

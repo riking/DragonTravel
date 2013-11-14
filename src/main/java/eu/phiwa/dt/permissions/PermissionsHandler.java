@@ -15,26 +15,7 @@ public class PermissionsHandler {
 	 * @return "True" if the player has the permissions, "false" if he hasn't
 	 */
 	public static boolean hasTravelPermission(CommandSender player, String traveltype, String destinationname) {
-
-		// Stops any NPEs ("traveltype" is 'travel'/'travel'/'ptravel'),
-		// if a problem occurs, simply allow it.^^
-		if (traveltype == null)
-			return true;
-		else if (traveltype != "travel") {
-			// Check for all Traveltypes other than "travel"
-			if (player.hasPermission("dt." + traveltype))
-				return true;
-			else
-				return false;
-		} else {
-			// Check for "travel"-permissions
-			if (player.hasPermission("dt.travel.*")) // wildcard
-				return true;
-			else if (player.hasPermission("dt.travel." + destinationname)) // station-specific
-				return true;
-			else
-				return false; // No permission
-		}
+		return player.hasPermission("dt.travel.*") || player.hasPermission("dt.travel." + destinationname);
 	}
 
 	/**
@@ -46,19 +27,7 @@ public class PermissionsHandler {
 	 *             checks the general permission)
 	 * @return "True" if the player has the permissions, "false" if he hasn't
 	 */
-	public static boolean hasFlightPermission(CommandSender sender, String flightname) {
-
-		if (sender.hasPermission("dt.flight.*")) // wildcard
-			return true;
-		else {
-			if (flightname == null) // If no flightname is specified, we got a problem, but simply allow it...^^
-				return true;
-			else {
-				if (sender.hasPermission("dt.flight." + flightname)) // flight-specific
-					return true;
-				else
-					return false; // No permission
-			}
-		}
+	public static boolean hasFlightPermission(CommandSender player, String flightname) {
+		return player.hasPermission("dt.flight.*") || player.hasPermission("dt.flight." + flightname);
 	}
 }

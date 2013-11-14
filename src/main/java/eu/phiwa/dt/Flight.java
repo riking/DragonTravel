@@ -12,7 +12,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
-import eu.phiwa.dt.flights.FlightEditor;
 import eu.phiwa.dt.flights.Waypoint;
 
 @SerializableAs("DT-Flight")
