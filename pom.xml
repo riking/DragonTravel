@@ -31,12 +31,16 @@
 					</artifactSet>
 					<relocations>
 						<relocation>
-							<pattern>com.sk89q.bukkit.util</pattern>
+							<pattern>com.sk89q.bukkit</pattern>
 							<shadedPattern>eu.phiwa.dt.lib.sk89q.bukkit</shadedPattern>
 						</relocation>
 						<relocation>
-							<pattern>com.sk89q.minecraft.util</pattern>
+							<pattern>com.sk89q.minecraft</pattern>
 							<shadedPattern>eu.phiwa.dt.lib.sk89q.minecraft</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>com.sk89q.util</pattern>
+							<shadedPattern>eu.phiwa.dt.lib.sk89q.util</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
