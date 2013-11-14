@@ -4,15 +4,25 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.server.v1_6_R3.AxisAlignedBB;
+import net.minecraft.server.v1_6_R3.Block;
+import net.minecraft.server.v1_6_R3.CrashReport;
+import net.minecraft.server.v1_6_R3.CrashReportSystemDetails;
+import net.minecraft.server.v1_6_R3.EntityHuman;
+import net.minecraft.server.v1_6_R3.MathHelper;
+import net.minecraft.server.v1_6_R3.ReportedException;
 import net.minecraft.server.v1_6_R3.EntityEnderDragon;
 import net.minecraft.server.v1_6_R3.EntityLiving;
 import net.minecraft.server.v1_6_R3.World;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import eu.phiwa.dt.flights.Waypoint;
@@ -43,6 +53,8 @@ public class RyeDragon extends EntityEnderDragon {
 	private boolean finalmove = false;
 	private boolean move = false;
 
+	// Free travel
+	boolean isFreeFlight = false;
 
 	// Amount to fly up/down during a flight/travel
 	private double XperTick;
@@ -368,7 +380,314 @@ public class RyeDragon extends EntityEnderDragon {
 		setPosition(currentX, currentY, currentZ);
 	}
 
+	public void startFreeFlight() {
+		this.bukkitDragon = this.getBukkitEntity();
+		this.bukkitRider = (Player) this.passenger.getBukkitEntity();
 
+		this.isFreeFlight = true;
+		this.move = true;
+
+		this.startX = start.getX();
+		this.startY = start.getY();
+		this.startZ = start.getZ();
+	}
+
+	private static Field isJumping = null;
+	static {
+		try {
+			isJumping = net.minecraft.server.v1_6_R3.EntityLiving.class.getDeclaredField("bd");
+			isJumping.setAccessible(true);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+
+	private static final double SPEED_CAP = 1D;
+	private static final double BACKWARDS_SPEED_CAP = 0.1D;
+
+	public void free() {
+		// Returns if the dragon won't move
+		if (!move)
+			return;
+
+		// SECTION: SET UP PLAYER INPUT VARIABLES
+
+		boolean requestedSneak = false;
+		// Reattach player to the dragon
+		if (passenger == null) {
+			bukkitDragon.setPassenger(bukkitRider);
+			requestedSneak = true;
+		}
+
+		net.minecraft.server.v1_6_R3.EntityLiving playerPassenger = (net.minecraft.server.v1_6_R3.EntityLiving) this.passenger;
+		boolean requestedJump = false;
+		requestedSneak = requestedSneak || playerPassenger.isSneaking() || playerPassenger.isSprinting();
+
+		if (isJumping != null) {
+			try {
+				requestedJump = (Boolean) isJumping.get(playerPassenger);
+			} catch (Throwable ignored) {
+			}
+		}
+		try {
+			System.out.println(String.format("be: %f bf: %f bd: %b sneaking: %b", playerPassenger.be, playerPassenger.bf, isJumping.get(playerPassenger), playerPassenger.isSneaking()));
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+
+		// side movement is - for A, + for D
+		// forward movement is - for S, + for W
+		double requestedAD = playerPassenger.be;
+		double requestedWS = playerPassenger.bf;
+
+		// END SECTION: SET UP PLAYER INPUT VARIABLES
+
+		double prevSpeed = Math.sqrt(motX * motX + motZ * motZ);
+		double newSpeed = prevSpeed;
+		this.yaw -= requestedAD * 3;
+		//this.yaw = (float) ((this.yaw * 39F + (passenger.yaw > 180F ? passenger.yaw - 180F : passenger.yaw + 180F)) / 40F);
+
+		if (requestedWS > 0) {
+			newSpeed += 0.01D;
+			newSpeed *= 1.05D;
+			this.yaw = (float) ((this.yaw * 39F + (passenger.yaw > 180F ? passenger.yaw - 180F : passenger.yaw + 180F)) / 40F);
+		} else if (requestedWS < 0) {
+			newSpeed -= 0.1D;
+			newSpeed *= 0.8D;
+		} else {
+			newSpeed *= 0.985D;
+		}
+
+		if (newSpeed > SPEED_CAP) {
+			newSpeed = SPEED_CAP;
+		} else if (newSpeed < -BACKWARDS_SPEED_CAP) {
+			newSpeed = -BACKWARDS_SPEED_CAP;
+		} else if (newSpeed > -0.0015 && newSpeed < 0.0015) {
+			newSpeed = 0;
+		}
+
+		this.motX = newSpeed * -Math.sin((yaw + 180F) * Math.PI / 180F);
+		this.motZ = newSpeed * Math.cos((yaw + 180F) * Math.PI / 180F);
+		this.motY = (requestedJump ? 0.1D : 0) + (requestedSneak ? -0.1D : 0);
+
+		if (this.onGround) {
+			motY += 0.3D;
+		}
+
+		this.bounceMove(motX, motY, motZ);
+
+		// ACTUALLY MOVING
+		AxisAlignedBB original = this.boundingBox;
+		this.boundingBox.shrink(3D, 1D, 3D);
+		this.move(motX, motY, motZ);
+		this.boundingBox.grow(3D, 1D, 3D);
+	}
+
+	private int private_c;
+	private void bounceMove(double d0, double d1, double d2) {
+		this.X *= 0.4F;
+		double d3 = this.locX;
+		double d4 = this.locY;
+		double d5 = this.locZ;
+
+		if (this.K) {
+			this.K = false;
+			d0 *= 0.25D;
+			d1 *= 0.05000000074505806D;
+			d2 *= 0.25D;
+			this.motX = 0.0D;
+			this.motY = 0.0D;
+			this.motZ = 0.0D;
+		}
+
+		double d6 = d0;
+		double d7 = d1;
+		double d8 = d2;
+		AxisAlignedBB axisalignedbb = this.boundingBox.clone();
+		boolean flag = this.onGround && this.isSneaking() && false;
+
+		if (flag) {
+			double d9;
+
+			for (d9 = 0.05D; d0 != 0.0D && this.world.getCubes(this, this.boundingBox.c(d0, -1.0D, 0.0D)).isEmpty(); d6 = d0) {
+				if (d0 < d9 && d0 >= -d9) {
+					d0 = 0.0D;
+				} else if (d0 > 0.0D) {
+					d0 -= d9;
+				} else {
+					d0 += d9;
+				}
+			}
+
+			for (; d2 != 0.0D && this.world.getCubes(this, this.boundingBox.c(0.0D, -1.0D, d2)).isEmpty(); d8 = d2) {
+				if (d2 < d9 && d2 >= -d9) {
+					d2 = 0.0D;
+				} else if (d2 > 0.0D) {
+					d2 -= d9;
+				} else {
+					d2 += d9;
+				}
+			}
+
+			while (d0 != 0.0D && d2 != 0.0D && this.world.getCubes(this, this.boundingBox.c(d0, -1.0D, d2)).isEmpty()) {
+				if (d0 < d9 && d0 >= -d9) {
+					d0 = 0.0D;
+				} else if (d0 > 0.0D) {
+					d0 -= d9;
+				} else {
+					d0 += d9;
+				}
+
+				if (d2 < d9 && d2 >= -d9) {
+					d2 = 0.0D;
+				} else if (d2 > 0.0D) {
+					d2 -= d9;
+				} else {
+					d2 += d9;
+				}
+
+				d6 = d0;
+				d8 = d2;
+			}
+		}
+
+		List list = this.world.getCubes(this, this.boundingBox.a(d0, d1, d2));
+
+		for (int i = 0; i < list.size(); ++i) {
+			d1 = ((AxisAlignedBB) list.get(i)).b(this.boundingBox, d1);
+		}
+
+		this.boundingBox.d(0.0D, d1, 0.0D);
+		if (!this.L && d7 != d1) {
+			d2 = 0.0D;
+			d1 = 0.0D;
+			d0 = 0.0D;
+		}
+
+		boolean flag1 = this.onGround || d7 != d1 && d7 < 0.0D;
+
+		int j;
+
+		for (j = 0; j < list.size(); ++j) {
+			d0 = ((AxisAlignedBB) list.get(j)).a(this.boundingBox, d0);
+		}
+
+		this.boundingBox.d(d0, 0.0D, 0.0D);
+		if (!this.L && d6 != d0) {
+			d2 = 0.0D;
+			d1 = 0.0D;
+			d0 = 0.0D;
+		}
+
+		for (j = 0; j < list.size(); ++j) {
+			d2 = ((AxisAlignedBB) list.get(j)).c(this.boundingBox, d2);
+		}
+
+		this.boundingBox.d(0.0D, 0.0D, d2);
+		if (!this.L && d8 != d2) {
+			d2 = 0.0D;
+			d1 = 0.0D;
+			d0 = 0.0D;
+		}
+
+		double d10;
+		double d11;
+		double d12;
+		int k;
+
+		if (this.Y > 0.0F && flag1 && (flag || this.X < 0.05F) && (d6 != d0 || d8 != d2)) {
+			d10 = d0;
+			d11 = d1;
+			d12 = d2;
+			d0 = d6;
+			d1 = (double) this.Y;
+			d2 = d8;
+			AxisAlignedBB axisalignedbb1 = this.boundingBox.clone();
+
+			this.boundingBox.d(axisalignedbb);
+			list = this.world.getCubes(this, this.boundingBox.a(d6, d1, d8));
+
+			for (k = 0; k < list.size(); ++k) {
+				d1 = ((AxisAlignedBB) list.get(k)).b(this.boundingBox, d1);
+			}
+
+			this.boundingBox.d(0.0D, d1, 0.0D);
+			if (!this.L && d7 != d1) {
+				d2 = 0.0D;
+				d1 = 0.0D;
+				d0 = 0.0D;
+			}
+
+			for (k = 0; k < list.size(); ++k) {
+				d0 = ((AxisAlignedBB) list.get(k)).a(this.boundingBox, d0);
+			}
+
+			this.boundingBox.d(d0, 0.0D, 0.0D);
+			if (!this.L && d6 != d0) {
+				d2 = 0.0D;
+				d1 = 0.0D;
+				d0 = 0.0D;
+			}
+
+			for (k = 0; k < list.size(); ++k) {
+				d2 = ((AxisAlignedBB) list.get(k)).c(this.boundingBox, d2);
+			}
+
+			this.boundingBox.d(0.0D, 0.0D, d2);
+			if (!this.L && d8 != d2) {
+				d2 = 0.0D;
+				d1 = 0.0D;
+				d0 = 0.0D;
+			}
+
+			if (!this.L && d7 != d1) {
+				d2 = 0.0D;
+				d1 = 0.0D;
+				d0 = 0.0D;
+			} else {
+				d1 = (double) (-this.Y);
+
+				for (k = 0; k < list.size(); ++k) {
+					d1 = ((AxisAlignedBB) list.get(k)).b(this.boundingBox, d1);
+				}
+
+				this.boundingBox.d(0.0D, d1, 0.0D);
+			}
+
+			if (d10 * d10 + d12 * d12 >= d0 * d0 + d2 * d2) {
+				d0 = d10;
+				d1 = d11;
+				d2 = d12;
+				this.boundingBox.d(axisalignedbb1);
+			}
+		}
+
+		//this.locX = (this.boundingBox.a + this.boundingBox.d) / 2.0D;
+		//this.locY = this.boundingBox.b + (double) this.height - (double) this.X;
+		//this.locZ = (this.boundingBox.c + this.boundingBox.f) / 2.0D;
+		this.positionChanged = d6 != d0 || d8 != d2;
+		this.H = d7 != d1;
+		this.onGround = d7 != d1 && d7 < 0.0D;
+		this.I = this.positionChanged || this.H;
+		this.a(d1, this.onGround);
+		// Attempt at the bounce change
+		if (d6 != d0) {
+			this.motX = -this.motX;
+		}
+
+		if (d7 != d1) {
+			this.motY = -this.motY;
+		}
+
+		if (d8 != d2) {
+			this.motZ = -this.motZ;
+		}
+
+		d10 = this.locX - d3;
+		d11 = this.locY - d4;
+		d12 = this.locZ - d5;
+
+	}
 	/**
 	 * Gets the correct yaw for this specific path
 	 */
@@ -408,6 +727,12 @@ public class RyeDragon extends EntityEnderDragon {
 		// Flight
 		if (isFlight) {
 			flight();
+			return;
+		}
+
+		// Free flight
+		if (isFreeFlight) {
+			free();
 			return;
 		}
 	}

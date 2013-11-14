@@ -337,6 +337,20 @@ public final class DragonTravelCommands {
 		}
 	}
 
+	@Command(aliases = {"free"},
+			desc = "Start free travel",
+			help = "Begins a free-flight episode. Use WASD and mouselook to control the dragon.")
+	@CommandPermissions({"dt.start.free.command"})
+	public static void startFreeTravel(CommandContext args, CommandSender sender) throws CommandException {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.NoConsole"));
+			return;
+		}
+		Player player = (Player) sender;
+
+		Travels.beginFree(player);
+	}
+
 	@Command(aliases = {"travel"},
 			desc = "Travel to another station",
 			usage = "<station name>",

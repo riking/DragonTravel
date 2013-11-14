@@ -82,6 +82,7 @@ permissions:
             dt.start.player.command: true
             dt.start.home.command: true
             dt.start.fhome.command: true
+            dt.start.freeflight.command: true
 
     dt.start.flight.*:
         children:
@@ -105,6 +106,8 @@ permissions:
     dt.start.travel.command:
         description: Player may start a travel to a station with a command
 
+    dt.start.freeflight.command:
+        description: Player may start a free-flight with a command
     dt.start.coord.command:
         description: Player may start a travel to coordinates with a command
     dt.start.player.command:

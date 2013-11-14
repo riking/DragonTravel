@@ -275,6 +275,20 @@ public class Travels {
 
 	}
 
+	public static void beginFree(Player player) {
+		Location temploc = player.getLocation();
+		player.teleport(temploc);
+
+		if (!DragonManagement.mount(player))
+			return;
+
+		if (!DragonTravelMain.listofDragonriders.containsKey(player))
+			return;
+
+		RyeDragon dragon = DragonTravelMain.listofDragonriders.get(player);
+		dragon.startFreeFlight();
+	}
+
 	private static float getCorrectYawForPlayer(Player player, Location destination) {
 		if (player.getLocation().getBlockZ() > destination.getBlockZ())
 			return (float) (-Math.toDegrees(Math.atan((player.getLocation().getBlockX() - destination.getBlockX()) / (player.getLocation().getBlockZ() - destination.getBlockZ())))) + 180.0F;
