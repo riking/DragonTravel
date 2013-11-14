@@ -195,7 +195,7 @@ public class RyeDragon extends EntityEnderDragon {
 			else {
 
 				// Interworld-travel teleport
-				if (bukkitDragon.getWorld().getName() != toWorld.getName()) {
+				if (!bukkitDragon.getWorld().equals(toWorld)) {
 					this.bukkitRider = (Player) bukkitDragon.getPassenger();
 
 					spawnOtherWorld = destlocOtherworld.clone();

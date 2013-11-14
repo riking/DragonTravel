@@ -95,9 +95,9 @@ public class CommandHelpTopic extends IndexHelpTopic {
 			sb.append("Usage: ");
 			sb.append(ChatColor.WHITE);
 			String tmp = cmd.usage();
-			tmp.replace("<command>", name.substring(1));
-			tmp.replaceAll("(\\[.*?\\])", ChatColor.LIGHT_PURPLE + "$1" + ChatColor.WHITE);
-			tmp.replaceAll("(<.*?>)", ChatColor.AQUA + "$1" + ChatColor.WHITE);
+			tmp = tmp.replace("<command>", name.substring(1));
+			tmp = tmp.replaceAll("(\\[.*?\\])", ChatColor.LIGHT_PURPLE + "$1" + ChatColor.WHITE);
+			tmp = tmp.replaceAll("(<.*?>)", ChatColor.AQUA + "$1" + ChatColor.WHITE);
 			sb.append(tmp);
 
 			if (cmd.aliases().length > 0) {

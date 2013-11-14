@@ -115,26 +115,20 @@ public class Travels {
 
 		Location loc = new Location(world, x, y, z);
 
-		if (world.getName() == player.getWorld().getName()) {
-
+		if (world.equals(player.getWorld())) {
 			String message = DragonTravelMain.messagesHandler.getMessage("Messages.Travels.Successful.TravellingToCoordinatesSameWorld");
 			message = message.replace("{x}", "%d");
-			message = String.format(message, x);
 			message = message.replace("{y}", "%d");
-			message = String.format(message, y);
 			message = message.replace("{z}", "%d");
-			message = String.format(message, z);
+			message = String.format(message, x, y, z);
 			player.sendMessage(message);
 		} else {
 			String message = DragonTravelMain.messagesHandler.getMessage("Messages.Travels.Successful.TravellingToCoordinatesOtherWorld");
-			message.replace("{x}", "%d");
-			message = String.format(message, x);
-			message.replace("{y}", "%d");
-			message = String.format(message, y);
-			message.replace("{z}", "%d");
-			message = String.format(message, z);
-			message.replace("{worldname}", "%s");
-			message = String.format(message, world.getName());
+			message = message.replace("{x}", "%d");
+			message = message.replace("{y}", "%d");
+			message = message.replace("{z}", "%d");
+			message = message.replace("{worldname}", "%4$s"); // guaranteed to be the 4th arg even if it's in front
+			message = String.format(message, x, y, z, world.getName());
 			player.sendMessage(message);
 		}
 
@@ -251,7 +245,7 @@ public class Travels {
 		}
 
 		Location temploc = player.getLocation();
-		if (destination.getWorld().getName() == player.getWorld().getName()) {
+		if (destination.getWorld().equals(player.getWorld())) {
 			temploc.setYaw(getCorrectYawForPlayer(player, destination));
 			player.teleport(temploc);
 		} else {
@@ -268,7 +262,7 @@ public class Travels {
 
 		RyeDragon dragon = DragonTravelMain.listofDragonriders.get(player);
 
-		if (destination.getWorld().getName() == player.getWorld().getName())
+		if (destination.getWorld().equals(player.getWorld()))
 			dragon.startTravel(destination, false);
 		else
 			dragon.startTravel(destination, true);
