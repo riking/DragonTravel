@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import eu.phiwa.dt.DragonTravelMain;
+import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.modules.DragonManagement;
 import eu.phiwa.dt.movement.Flights;
 import eu.phiwa.dt.movement.Travels;
@@ -76,7 +77,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 
-			if (stationname.equalsIgnoreCase((DragonTravelMain.config.getString("RandomDest.Name")))) {
+			if (stationname.equalsIgnoreCase((Config.config.getString("RandomDest.Name")))) {
 				if (lines[3].length() != 0) {
 					try {
 						double costOnSign = Double.parseDouble(lines[3]);
@@ -90,7 +91,7 @@ public class PlayerListener implements Listener {
 						return;
 				}
 
-				Travels.toRandomdest(player, !DragonTravelMain.config.getBoolean("MountingLimit.ExcludeSigns"));
+				Travels.toRandomdest(player, !Config.config.getBoolean("MountingLimit.ExcludeSigns"));
 			}
 
 			else if (DragonTravelMain.dbStationsHandler.getStation(stationname) == null) {
@@ -110,7 +111,7 @@ public class PlayerListener implements Listener {
 					if (!plugin.paymentManager.chargePlayer(ChargeType.TRAVEL_TOSTATION, player))
 						return;
 				}
-				Travels.toStation(player, stationname, !DragonTravelMain.config.getBoolean("MountingLimit.ExcludeSigns"));
+				Travels.toStation(player, stationname, !Config.config.getBoolean("MountingLimit.ExcludeSigns"));
 			}
 		}
 
@@ -140,7 +141,7 @@ public class PlayerListener implements Listener {
 					if (!plugin.paymentManager.chargePlayer(ChargeType.FLIGHT, player))
 						return;
 				}
-				Flights.startFlight(player, flightname, !DragonTravelMain.config.getBoolean("MountingLimit.ExcludeSigns"), false, null);
+				Flights.startFlight(player, flightname, !Config.config.getBoolean("MountingLimit.ExcludeSigns"), false, null);
 			}
 		}
 	}

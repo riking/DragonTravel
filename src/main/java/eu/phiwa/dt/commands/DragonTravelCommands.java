@@ -24,6 +24,7 @@ import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.Flight;
 import eu.phiwa.dt.Home;
 import eu.phiwa.dt.Station;
+import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.flights.FlightEditor;
 import eu.phiwa.dt.flights.Waypoint;
 import eu.phiwa.dt.modules.DragonManagement;
@@ -370,7 +371,7 @@ public final class DragonTravelCommands {
 		}
 		Player player = (Player) sender;
 
-		if (station.equalsIgnoreCase((DragonTravelMain.config.getString("RandomDest.Name")))) {
+		if (station.equalsIgnoreCase((Config.config.getString("RandomDest.Name")))) {
 			if (!DragonTravelMain.plugin.paymentManager.chargePlayer(ChargeType.TRAVEL_TORANDOM, player))
 				return;
 			Travels.toRandomdest(player, true);
@@ -469,7 +470,7 @@ public final class DragonTravelCommands {
 		}
 		Player player = (Player) sender;
 
-		if (DragonTravelMain.pm.getPlugin("Factions") == null) {
+		if (Bukkit.getPluginManager().getPlugin("Factions") == null) {
 			player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Factions.Error.FactionsNotInstalled"));
 			return;
 		}
@@ -636,7 +637,7 @@ public final class DragonTravelCommands {
 		Player player = (Player) sender;
 		String station = args.getString(0);
 
-		if (station.equalsIgnoreCase(DragonTravelMain.config.getString("RandomDest.Name"))) {
+		if (station.equalsIgnoreCase(Config.config.getString("RandomDest.Name"))) {
 			player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Stations.Error.NotCreateStationWithRandomstatName"));
 			return;
 		}
@@ -667,7 +668,7 @@ public final class DragonTravelCommands {
 		Player player = (Player) sender;
 		String station = args.getString(0);
 
-		if (station.equalsIgnoreCase(DragonTravelMain.config.getString("RandomDest.Name"))) {
+		if (station.equalsIgnoreCase(Config.config.getString("RandomDest.Name"))) {
 			player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Stations.Error.NotCreateStationWithRandomstatName"));
 			return;
 		}

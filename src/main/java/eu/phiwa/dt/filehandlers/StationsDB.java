@@ -200,7 +200,7 @@ public class StationsDB {
 
 				tempLoc = new Location(world, x, y, z);
 
-				if (tempLoc.distance(playerLoc) <= DragonTravelMain.config.getInt("MountingLimit.Radius"))
+				if (tempLoc.distance(playerLoc) <= Config.config.getInt("MountingLimit.Radius"))
 					return true;
 			}
 		}

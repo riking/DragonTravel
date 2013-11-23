@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.Flight;
 import eu.phiwa.dt.RyeDragon;
+import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.modules.DragonManagement;
+import eu.phiwa.dt.payment.ChargeType;
 
 public class Flights {
 	/**
@@ -48,15 +50,15 @@ public class Flights {
 		// Checks do not need to be performed,
 		// if the player is sent on the flight by an admin
 		if (!sentbyadmin) {
-			if (checkForStation && DragonTravelMain.config.getBoolean("MountingLimit.EnableForFlights") && !player.hasPermission("dt.ignoreusestations.flights")) {
+			if (checkForStation && Config.config.getBoolean("MountingLimit.EnableForFlights") && !player.hasPermission("dt.ignoreusestations.flights")) {
 				if (!DragonTravelMain.dbStationsHandler.checkForStation(player)) {
 					sender.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Stations.Error.NotAtAStation"));
 					return;
 				}
 			}
 
-			if (DragonTravelMain.requireItemFlight) {
-				if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.flight")) {
+			if (DragonTravelMain.config.requiresItem(ChargeType.FLIGHT)) {
+				if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.flight")) {
 					sender.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 					return;
 				}

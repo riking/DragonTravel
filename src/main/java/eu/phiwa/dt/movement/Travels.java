@@ -12,7 +12,9 @@ import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.Home;
 import eu.phiwa.dt.RyeDragon;
 import eu.phiwa.dt.Station;
+import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.modules.DragonManagement;
+import eu.phiwa.dt.payment.ChargeType;
 
 public class Travels {
 
@@ -34,8 +36,8 @@ public class Travels {
 			return;
 		}
 
-		if (DragonTravelMain.requireItemTravelStation) {
-			if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.travel")) {
+		if (DragonTravelMain.config.requiresItem(ChargeType.TRAVEL_TOSTATION)) {
+			if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.travel")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 				return;
 			}
@@ -55,17 +57,17 @@ public class Travels {
 	 */
 	public static void toRandomdest(Player player, Boolean checkForStation) {
 
-		if (DragonTravelMain.requireItemTravelRandom) {
-			if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.travel")) {
+		if (DragonTravelMain.config.requiresItem(ChargeType.TRAVEL_TORANDOM)) {
+			if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.travel")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 				return;
 			}
 		}
 
-		int minX = DragonTravelMain.config.getInt("X-Axis.MinX");
-		int maxX = DragonTravelMain.config.getInt("X-Axis.MaxX");
-		int minZ = DragonTravelMain.config.getInt("Z-Axis.MinZ");
-		int maxZ = DragonTravelMain.config.getInt("Z-Axis.MaxZ");
+		int minX = Config.config.getInt("X-Axis.MinX");
+		int maxX = Config.config.getInt("X-Axis.MaxX");
+		int minZ = Config.config.getInt("Z-Axis.MinZ");
+		int maxZ = Config.config.getInt("Z-Axis.MaxZ");
 		double x = minX + (Math.random() * (maxX - 1));
 		double z = minZ + (Math.random() * (maxZ - 1));
 		Location randomLoc = new Location(player.getWorld(), x, 10, z);
@@ -106,8 +108,8 @@ public class Travels {
 			}
 		}
 
-		if (DragonTravelMain.requireItemTravelCoordinates) {
-			if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.travel")) {
+		if (DragonTravelMain.config.requiresItem(ChargeType.TRAVEL_TOCOORDINATES)) {
+			if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.travel")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 				return;
 			}
@@ -146,8 +148,8 @@ public class Travels {
 	 */
 	public static void toPlayer(Player player, Player targetplayer, Boolean checkForStation) {
 
-		if (DragonTravelMain.requireItemTravelPlayer) {
-			if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.travel")) {
+		if (DragonTravelMain.config.requiresItem(ChargeType.TRAVEL_TOPLAYER)) {
+			if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.travel")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 				return;
 			}
@@ -174,8 +176,8 @@ public class Travels {
 			return;
 		}
 
-		if (DragonTravelMain.requireItemTravelHome) {
-			if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.travel")) {
+		if (DragonTravelMain.config.requiresItem(ChargeType.TRAVEL_TOHOME)) {
+			if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.travel")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 				return;
 			}
@@ -197,13 +199,13 @@ public class Travels {
 	 */
 	public static void toFactionhome(Player player, Boolean checkForStation) {
 
-		if (DragonTravelMain.pm.getPlugin("Factions") == null) {
+		if (Bukkit.getPluginManager().getPlugin("Factions") == null) {
 			player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Factions.Error.FactionsNotInstalled"));
 			return;
 		}
 
-		if (DragonTravelMain.requireItemTravelFactionhome) {
-			if (!player.getInventory().contains(DragonTravelMain.requiredItem) && !player.hasPermission("dt.notrequireitem.travel")) {
+		if (DragonTravelMain.config.requiresItem(ChargeType.TRAVEL_TOFACTIONHOME)) {
+			if (!player.getInventory().contains(DragonTravelMain.config.getRequiredMaterial()) && !player.hasPermission("dt.notrequireitem.travel")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.RequiredItemMissing"));
 				return;
 			}
@@ -237,7 +239,7 @@ public class Travels {
 	 */
 	private static void travel(Player player, Location destination, Boolean checkForStation) {
 
-		if (checkForStation && DragonTravelMain.config.getBoolean("MountingLimit.EnableForTravels") && !player.hasPermission("dt.ignoreusestations.travels")) {
+		if (checkForStation && Config.config.getBoolean("MountingLimit.EnableForTravels") && !player.hasPermission("dt.ignoreusestations.travels")) {
 			if (!DragonTravelMain.dbStationsHandler.checkForStation(player)) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Stations.Error.NotAtAStation"));
 				return;

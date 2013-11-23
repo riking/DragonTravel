@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import eu.phiwa.dt.DragonTravelMain;
+import eu.phiwa.dt.filehandlers.Config;
 
 /**
  * This PaymentHandler exacts a cost by removing items from the player's
@@ -37,28 +38,28 @@ public class ResourcesPaymentHandler implements PaymentHandler {
 		int amount;
 		switch (type) {
 		case TRAVEL_TOSTATION:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.toStation");
+			amount = Config.config.getInt("Payment.Resources.Prices.toStation");
 			break;
 		case TRAVEL_TORANDOM:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.toRandom");
+			amount = Config.config.getInt("Payment.Resources.Prices.toRandom");
 			break;
 		case TRAVEL_TOPLAYER:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.toPlayer");
+			amount = Config.config.getInt("Payment.Resources.Prices.toPlayer");
 			break;
 		case TRAVEL_TOCOORDINATES:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.toCoordinates");
+			amount = Config.config.getInt("Payment.Resources.Prices.toCoordinates");
 			break;
 		case TRAVEL_TOHOME:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.toHome");
+			amount = Config.config.getInt("Payment.Resources.Prices.toHome");
 			break;
 		case TRAVEL_TOFACTIONHOME:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.toFactionhome");
+			amount = Config.config.getInt("Payment.Resources.Prices.toFactionhome");
 			break;
 		case SETHOME:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.setHome");
+			amount = Config.config.getInt("Payment.Resources.Prices.setHome");
 			break;
 		case FLIGHT:
-			amount = DragonTravelMain.config.getInt("Payment.Resources.Prices.Flight");
+			amount = Config.config.getInt("Payment.Resources.Prices.Flight");
 			break;
 		default:
 			throw new UnsupportedOperationException("ResourcesPaymentHandler doesn't know how to deal with a ChargeType of " + type.name() + ". Fix immediately!");

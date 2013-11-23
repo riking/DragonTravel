@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import eu.phiwa.dt.DragonTravelMain;
+import eu.phiwa.dt.filehandlers.Config;
 
 public class EconomyPaymentHandler implements PaymentHandler {
 	private Economy economyProvider;
@@ -45,28 +46,28 @@ public class EconomyPaymentHandler implements PaymentHandler {
 		double amount;
 		switch (type) {
 		case TRAVEL_TOSTATION:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.toStation");
+			amount = Config.config.getDouble("Payment.Economy.Prices.toStation");
 			break;
 		case TRAVEL_TORANDOM:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.toRandom");
+			amount = Config.config.getDouble("Payment.Economy.Prices.toRandom");
 			break;
 		case TRAVEL_TOPLAYER:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.toPlayer");
+			amount = Config.config.getDouble("Payment.Economy.Prices.toPlayer");
 			break;
 		case TRAVEL_TOCOORDINATES:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.toCoordinates");
+			amount = Config.config.getDouble("Payment.Economy.Prices.toCoordinates");
 			break;
 		case TRAVEL_TOHOME:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.toHome");
+			amount = Config.config.getDouble("Payment.Economy.Prices.toHome");
 			break;
 		case TRAVEL_TOFACTIONHOME:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.toFactionhome");
+			amount = Config.config.getDouble("Payment.Economy.Prices.toFactionhome");
 			break;
 		case SETHOME:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.setHome");
+			amount = Config.config.getDouble("Payment.Economy.Prices.setHome");
 			break;
 		case FLIGHT:
-			amount = DragonTravelMain.config.getDouble("Payment.Economy.Prices.Flight");
+			amount = Config.config.getDouble("Payment.Economy.Prices.Flight");
 			break;
 		default:
 			throw new UnsupportedOperationException("EconomyPaymentHandler doesn't know how to deal with a ChargeType of " + type.name() + ". Fix immediately!");

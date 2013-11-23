@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import eu.phiwa.dt.DragonTravelMain;
+import eu.phiwa.dt.payment.ChargeType;
 
 public class Config {
 	private DragonTravelMain plugin;
 	private File configFile;
+	public static FileConfiguration config;
 
 	public Config(DragonTravelMain plugin) {
 		this.plugin = plugin;
@@ -22,18 +26,18 @@ public class Config {
 		configFile = new File(plugin.getDataFolder(), "config.yml");
 		if (!configFile.exists())
 			deployDefaultFile("config.yml");
-		DragonTravelMain.config = YamlConfiguration.loadConfiguration(configFile);
+		Config.config = YamlConfiguration.loadConfiguration(configFile);
 		updateConfig();
 	}
 
 	private void updateConfig() {
-		if (DragonTravelMain.config.getDouble("File.Version") != DragonTravelMain.configVersion)
+		if (Config.config.getDouble("File.Version") != DragonTravelMain.configVersion)
 			newlyRequiredConfig();
 		noLongerRequiredConfig();
 		// Refresh file and config variables for persistence.
 		try {
-			DragonTravelMain.config.save(configFile);
-			DragonTravelMain.config = YamlConfiguration.loadConfiguration(configFile);
+			Config.config.save(configFile);
+			Config.config = YamlConfiguration.loadConfiguration(configFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			DragonTravelMain.logger.severe("Could not update config, disabling plugin!");
@@ -43,12 +47,12 @@ public class Config {
 	private void newlyRequiredConfig() {
 
 		// New options in version 0.2
-		if (!DragonTravelMain.config.isSet("PToggleDefault"))
-			DragonTravelMain.config.set("PToggleDefault", true);
+		if (!Config.config.isSet("PToggleDefault"))
+			Config.config.set("PToggleDefault", true);
 
 
 		// Update the file version
-		DragonTravelMain.config.set("File.Version", DragonTravelMain.configVersion);
+		Config.config.set("File.Version", DragonTravelMain.configVersion);
 
 	}
 
@@ -75,5 +79,18 @@ public class Config {
 		} catch (Exception e) {
 			DragonTravelMain.logger.info("Could not save default file");
 		}
+	}
+
+	public String getFileVersion() { return config.getString("File.Version"); }
+	public boolean shouldAntigriefDTDragons() { return config.getBoolean("AntiGriefDragons.ofDragonTravel"); }
+	public boolean shouldAntigriefAllDragons() { return config.getBoolean("AntiGriefDragons.all"); }
+	public boolean doWorldguardBypass() { return config.getBoolean("AntiGriefDragons.bypassWorldGuardAntiSpawn", true); }
+
+	public Material getRequiredMaterial() {
+		return Material.matchMaterial(config.getString("RequiredItem.Item", "DRAGON_EGG"));
+	}
+
+	public boolean requiresItem(ChargeType type) {
+		return config.getBoolean("RequiredItem.For." + type.getConfigString());
 	}
 }

@@ -15,6 +15,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.RyeDragon;
 import eu.phiwa.dt.anticheatplugins.CheatProtectionHandler;
+import eu.phiwa.dt.filehandlers.Config;
 
 public class DragonManagement {
 
@@ -103,7 +104,7 @@ public class DragonManagement {
 			return;
 		}
 		// Normal absteigen
-		else if (dismountAtcurrentLocation || !DragonTravelMain.config.getBoolean("TeleportToStartOnDismount")) {
+		else if (dismountAtcurrentLocation || !Config.config.getBoolean("TeleportToStartOnDismount")) {
 			//TODO: Check if correct if-clause
 
 			// Teleport player to a safe location

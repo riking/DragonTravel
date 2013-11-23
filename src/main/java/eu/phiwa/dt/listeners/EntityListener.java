@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.RyeDragon;
+import eu.phiwa.dt.filehandlers.Config;
 
 
 public class EntityListener implements Listener {
@@ -25,11 +26,14 @@ public class EntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEnderDragonExplode(EntityExplodeEvent event) {
-
-		if (DragonTravelMain.onlydragontraveldragons && event.getEntity() instanceof RyeDragon)
+		if (!(event.getEntity() instanceof EnderDragon)) {
+			return;
+		}
+		if (DragonTravelMain.config.shouldAntigriefAllDragons()) {
 			event.setCancelled(true);
-		else if (DragonTravelMain.alldragons && event.getEntity() instanceof EnderDragon)
+		} else if (DragonTravelMain.config.shouldAntigriefDTDragons() && event.getEntity() instanceof RyeDragon) {
 			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -40,7 +44,7 @@ public class EntityListener implements Listener {
 
 		Player player = (Player) event.getEntity();
 		if (DragonTravelMain.listofDragonriders.containsKey(player))
-			if (!DragonTravelMain.config.getBoolean("VulnerableRiders"))
+			if (!Config.config.getBoolean("VulnerableRiders"))
 				event.setCancelled(true);
 	}
 

@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import eu.phiwa.dt.DragonTravelMain;
+import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.signs.Signs;
 
 public class BlockListener implements Listener {
@@ -64,7 +65,7 @@ public class BlockListener implements Listener {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Signs.Error.NoTargetStationSpecified"));
 				return;
 			}
-			if (DragonTravelMain.dbStationsHandler.getStation(event.getLine(2)) == null && !event.getLine(2).equalsIgnoreCase(DragonTravelMain.config.getString("RandomDest.Name"))) {
+			if (DragonTravelMain.dbStationsHandler.getStation(event.getLine(2)) == null && !event.getLine(2).equalsIgnoreCase(Config.config.getString("RandomDest.Name"))) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Stations.Error.StationDoesNotExist").replace("{stationname}", event.getLine(2)));
 				return;
 			}

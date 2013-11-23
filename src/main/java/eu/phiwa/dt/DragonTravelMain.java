@@ -16,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -43,12 +42,12 @@ import eu.phiwa.dt.listeners.BlockListener;
 import eu.phiwa.dt.listeners.EntityListener;
 import eu.phiwa.dt.listeners.PlayerListener;
 import eu.phiwa.dt.modules.MountingScheduler;
+import eu.phiwa.dt.payment.ChargeType;
 import eu.phiwa.dt.payment.PaymentManager;
 
 
 public class DragonTravelMain extends JavaPlugin {
 
-	public static PluginManager pm;
 	public static DragonTravelMain plugin;
 	public static Logger logger;
 
@@ -63,15 +62,14 @@ public class DragonTravelMain extends JavaPlugin {
 	public static boolean ptoggleDefault = false;
 
 	// Listeners
-	private static EntityListener entityListener;
-	private static PlayerListener playerListener;
-	private static BlockListener blocklistener;
-	private static FlightEditor flighteditor;
+	private EntityListener entityListener;
+	private PlayerListener playerListener;
+	private BlockListener blocklistener;
+	private FlightEditor flighteditor;
 
 	// Config
 	public static double configVersion = 0.2;
-	public static FileConfiguration config;
-	public static Config configHandler;
+	public static Config config;
 
 	public static File databaseFolder;
 
@@ -85,16 +83,6 @@ public class DragonTravelMain extends JavaPlugin {
 	public static HashMap<Player, Location> listofDragonsridersStartingpoints = new HashMap<Player, Location>();
 	public static HashMap<Block, Block> globalwaypointmarkers = new HashMap<Block, Block>();
 	public static HashMap<String, Boolean> ptogglers = new HashMap<String, Boolean>();
-
-	// Required Item
-	public static boolean requireItemTravelStation = false;
-	public static boolean requireItemTravelRandom = false;
-	public static boolean requireItemTravelCoordinates = false;
-	public static boolean requireItemTravelPlayer = false;
-	public static boolean requireItemTravelHome = false;
-	public static boolean requireItemTravelFactionhome = false;
-	public static boolean requireItemFlight = false;
-	public static Material requiredItem = Material.DRAGON_EGG;
 
 	// Dragon Antigrief-Options
 	public static boolean onlydragontraveldragons;
@@ -131,7 +119,7 @@ public class DragonTravelMain extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		pm = getServer().getPluginManager();
+		PluginManager pm = getServer().getPluginManager();
 		logger = getLogger();
 		plugin = this;
 
@@ -156,14 +144,15 @@ public class DragonTravelMain extends JavaPlugin {
 			databaseFolder.mkdirs();
 
 		// Config
-		configHandler = new Config(this);
-		configHandler.loadConfig();
-		if (config.getString("File.Version") == null) {
+		config = new Config(this);
+		config.loadConfig();
+		if (config.getFileVersion() == null) {
 			logger.log(Level.SEVERE, "Could not initialize config! Disabling the plugin!");
 			this.getPluginLoader().disablePlugin(this);
 			return;
-		} else
+		} else {
 			logger.info("Config loaded successfully.");
+		}
 
 		// Messages-file
 		messagesHandler = new Messages(this);
@@ -185,36 +174,23 @@ public class DragonTravelMain extends JavaPlugin {
 		CheatProtectionHandler.setup();
 
 		// Load some variables from config
-		onlydragontraveldragons = config.getBoolean("AntiGriefDragons.ofDragonTravel");
-		alldragons = config.getBoolean("AntiGriefDragons.all");
-		ignoreAntiMobspawnAreas = config.getBoolean("AntiGriefDragons.bypassWorldGuardAntiSpawn");
+		onlydragontraveldragons = config.shouldAntigriefDTDragons();
+		alldragons = config.shouldAntigriefAllDragons();
+		ignoreAntiMobspawnAreas = config.doWorldguardBypass();
 
-		Material tmp = Material.matchMaterial(config.getString("RequiredItem.Item", "DRAGON_EGG"));
-		if (tmp != null) {
-			requiredItem = tmp;
-		}
+		speed = Config.config.getDouble("DragonSpeed");
 
-		requireItemTravelStation = config.getBoolean("RequiredItem.For.toStation");
-		requireItemTravelRandom = config.getBoolean("RequiredItem.For.toRandom");
-		requireItemTravelCoordinates = config.getBoolean("RequiredItem.For.toCoordinates");
-		requireItemTravelPlayer = config.getBoolean("RequiredItem.For.toPlayer");
-		requireItemTravelHome = config.getBoolean("RequiredItem.For.toHome");
-		requireItemTravelFactionhome = config.getBoolean("RequiredItem.For.toFactionhome");
-		requireItemFlight = config.getBoolean("RequiredItem.For.Flight");
+		paymentItem = Material.matchMaterial(Config.config.getString("Payment.Resources.Item", "GOLD_NUGGET"));
 
-		speed = config.getDouble("DragonSpeed");
+		dragonLimit = Config.config.getInt("DragonLimit", 5000);
 
-		paymentItem = Material.matchMaterial(config.getString("Payment.Resources.Item", "GOLD_NUGGET"));
+		onlysigns = Config.config.getBoolean("OnlySigns");
 
-		dragonLimit = config.getInt("DragonLimit", 5000);
+		ptoggleDefault = Config.config.getBoolean("PToggleDefault");
 
-		onlysigns = config.getBoolean("OnlySigns");
-
-		ptoggleDefault = config.getBoolean("PToggleDefault");
-
-		usePayment = config.getBoolean("Payment.usePayment");
-		byEconomy = config.getBoolean("Payment.byEconomy");
-		byResources = config.getBoolean("Payment.byResources");
+		usePayment = Config.config.getBoolean("Payment.usePayment");
+		byEconomy = Config.config.getBoolean("Payment.byEconomy");
+		byResources = Config.config.getBoolean("Payment.byResources");
 
 		if (byEconomy && byResources) {
 			getLogger().severe("Both Payment.byEconomy and Payment.byResources are set to true. Attempting Economy first..");
@@ -273,7 +249,7 @@ public class DragonTravelMain extends JavaPlugin {
 
 			logger.severe("Could not register the RyeDragon-entity!");
 			e.printStackTrace();
-			pm.disablePlugin(this);
+			getServer().getPluginManager().disablePlugin(this);
 		}
 		return false;
 	}
@@ -286,8 +262,8 @@ public class DragonTravelMain extends JavaPlugin {
 		logger.info("SIMPLY RESTART YOUR SERVER INSTEAD; THAT'S MUCH SAFER!");
 
 		// Config
-		configHandler.loadConfig();
-		if (config.getString("File.Version") == null) {
+		config.loadConfig();
+		if (Config.config.getString("File.Version") == null) {
 			logger.severe("Could not initialize config! Disabling the plugin!");
 			this.getPluginLoader().disablePlugin(this);
 			return;

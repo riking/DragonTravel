@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
+import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.flights.Waypoint;
 import eu.phiwa.dt.modules.DragonManagement;
 
@@ -141,7 +142,7 @@ public class RyeDragon extends EntityEnderDragon {
 			this.startY = start.getY();
 			this.startZ = start.getZ();
 
-			travelY = DragonTravelMain.config.getInt("TravelHeight");
+			travelY = Config.config.getInt("TravelHeight");
 		}
 
 		this.bukkitDragon = this.getBukkitEntity();

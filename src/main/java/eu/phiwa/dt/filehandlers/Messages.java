@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,7 +38,7 @@ public class Messages {
 			DragonTravelMain.logger.severe("Could not load messages-file because the language could not be read from the config! Disabling plugin!");
 			new RuntimeException("No language set").printStackTrace();
 
-			DragonTravelMain.pm.disablePlugin(DragonTravelMain.plugin);
+			Bukkit.getPluginManager().disablePlugin(DragonTravelMain.plugin);
 			return false;
 		}
 
@@ -74,10 +75,10 @@ public class Messages {
 		// Add new keys here!
 
 		// v0.0.0.9
-		if (DragonTravelMain.config.get("Messages.Flights.Error.OnlySigns") == null)
-			DragonTravelMain.config.set("Messages.Flights.Error.OnlySigns", "&cThis command has been disabled by the admin, you can only use flights using signs.");
-		if (DragonTravelMain.config.get("Messages.Stations.Error.NotCreateStationWithRandomstatName") == null)
-			DragonTravelMain.config.set("Messages.Stations.Error.NotCreateStationWithRandomstatName", "&cYou cannot create a staion with the name of the RandomDest.");
+		if (Config.config.get("Messages.Flights.Error.OnlySigns") == null)
+			Config.config.set("Messages.Flights.Error.OnlySigns", "&cThis command has been disabled by the admin, you can only use flights using signs.");
+		if (Config.config.get("Messages.Stations.Error.NotCreateStationWithRandomstatName") == null)
+			Config.config.set("Messages.Stations.Error.NotCreateStationWithRandomstatName", "&cYou cannot create a staion with the name of the RandomDest.");
 	}
 
 	private void noLongerRequiredMessages() {
