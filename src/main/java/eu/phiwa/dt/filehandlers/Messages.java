@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import eu.phiwa.dt.DragonTravelMain;
+import eu.phiwa.dt.util.Utils;
 
 public class Messages {
 
@@ -31,21 +32,20 @@ public class Messages {
 	private FileConfiguration messages;
 
 	public boolean loadMessages() {
-
-		language = this.plugin.getConfig().getString("Language");
+		language = Config.getInstance().getLanguage();
 
 		if (language == null) {
 			DragonTravelMain.logger.severe("Could not load messages-file because the language could not be read from the config! Disabling plugin!");
 			new RuntimeException("No language set").printStackTrace();
 
-			Bukkit.getPluginManager().disablePlugin(DragonTravelMain.plugin);
 			return false;
 		}
 
-		messagesFile = new File(plugin.getDataFolder(), "messages-" + language + ".yml");
+		messagesFile = new File(plugin.getDataFolder(), "locale/messages-" + language + ".yml");
 
-		if (!messagesFile.exists())
-			deployDefaultFile("messages-" + language + ".yml");
+		if (!messagesFile.exists()) {
+			Utils.deployDefaultFile("locale/messages-" + language + ".yml", plugin);
+		}
 
 		messages = YamlConfiguration.loadConfiguration(messagesFile);
 		updateConfig();

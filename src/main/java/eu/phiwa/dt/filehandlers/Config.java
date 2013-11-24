@@ -1,10 +1,7 @@
 package eu.phiwa.dt.filehandlers;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.payment.ChargeType;
+import eu.phiwa.dt.util.Utils;
 
 public class Config {
 	private DragonTravelMain plugin;
@@ -31,12 +29,15 @@ public class Config {
 	/**
 	 * Returns the singleton instance of the Config.
 	 */
-	public static Config getInstance() { return DragonTravelMain.config; }
+	public static Config getInstance() {
+		return DragonTravelMain.config;
+	}
 
-	public void loadConfig() {
+	public boolean loadConfig() {
 		configFile = new File(plugin.getDataFolder(), "config.yml");
-		if (!configFile.exists())
-			deployDefaultFile("config.yml");
+		if (!configFile.exists()) {
+			Utils.deployDefaultFile("config.yml", plugin);
+		}
 		config = YamlConfiguration.loadConfiguration(configFile);
 		updateConfig();
 
@@ -50,6 +51,8 @@ public class Config {
 				plugin.getLogger().severe("Both Payment.byEconomy and Payment.byResources are set to true. Attempting Economy first...");
 			}
 		}
+
+		return getFileVersion() != null;
 	}
 
 	private void updateConfig() {
@@ -83,27 +86,6 @@ public class Config {
 		// DragonTravelMain.config.set("example key", null);
 	}
 
-
-	private void deployDefaultFile(String name) {
-		try {
-			File target = new File(this.plugin.getDataFolder(), name);
-			InputStream source = this.plugin.getResource(name);
-
-			if (!target.exists()) {
-				OutputStream output = new FileOutputStream(target);
-				byte[] buffer = new byte[1024];
-				int len;
-				while ((len = source.read(buffer)) > 0)
-					output.write(buffer, 0, len);
-				output.close();
-			}
-			source.close();
-			DragonTravelMain.logger.info("Deployed " + name);
-		} catch (Exception e) {
-			DragonTravelMain.logger.info("Could not save default file");
-		}
-	}
-
 	public String getFileVersion() { return config.getString("File.Version"); }
 	public boolean shouldAntigriefDTDragons() { return config.getBoolean("AntiGriefDragons.ofDragonTravel"); }
 	public boolean shouldAntigriefAllDragons() { return config.getBoolean("AntiGriefDragons.all"); }
@@ -120,4 +102,6 @@ public class Config {
 	public Material getRequiredMaterial() {
 		return Material.matchMaterial(config.getString("RequiredItem.Item", "DRAGON_EGG"));
 	}
+
+	public String getLanguage() { return config.getString("Language"); }
 }

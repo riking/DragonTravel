@@ -120,10 +120,20 @@ public class DragonTravelMain extends JavaPlugin {
 		logger = getLogger();
 		plugin = this;
 
+		// Initialize Config
+		config = new Config(this);
+		if (!config.loadConfig()) {
+			logger.log(Level.SEVERE, "Could not initialize config! Please fix the problems described above and restart the server.");
+			pm.disablePlugin(this);
+			return;
+		}
+
 		// Add the new entity to Minecraft's (Craftbukkit's) entities
 		// Returns false if plugin disabled
-		if (!registerEntity())
+		if (!registerEntity()) {
+			pm.disablePlugin(this);
 			return;
+		}
 
 		// Register EventListener
 		entityListener = new EntityListener(this);
@@ -137,24 +147,16 @@ public class DragonTravelMain extends JavaPlugin {
 		pm.registerEvents(blocklistener, this);
 
 		databaseFolder = new File(plugin.getDataFolder(), "databases");
-		if (!(databaseFolder.exists()))
+		if (!(databaseFolder.exists())) {
 			databaseFolder.mkdirs();
-
-		// Config
-		config = new Config(this);
-		config.loadConfig();
-		if (config.getFileVersion() == null) {
-			logger.log(Level.SEVERE, "Could not initialize config! Disabling the plugin!");
-			this.getPluginLoader().disablePlugin(this);
-			return;
-		} else {
-			logger.info("Config loaded successfully.");
 		}
 
 		// Messages-file
 		messagesHandler = new Messages(this);
-		if (!messagesHandler.loadMessages())
+		if (!messagesHandler.loadMessages()) {
+			pm.disablePlugin(this);
 			return;
+		}
 
 		// StationsDB
 		dbStationsHandler = new StationsDB(this);
@@ -236,11 +238,10 @@ public class DragonTravelMain extends JavaPlugin {
 				e.addSuppressed(ex);
 			}
 
-			logger.severe("Could not register the RyeDragon-entity!");
+			logger.severe("Could not register the RyeDragon-entity! Please check for updates to DragonTravel.");
 			e.printStackTrace();
-			getServer().getPluginManager().disablePlugin(this);
+			return false;
 		}
-		return false;
 	}
 
 
