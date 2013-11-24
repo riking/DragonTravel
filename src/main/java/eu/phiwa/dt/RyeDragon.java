@@ -77,6 +77,7 @@ public class RyeDragon extends EntityEnderDragon {
 	Entity bukkitDragon;
 	Player bukkitRider;
 
+	private final double configSpeed = Config.getInstance().getSpeed();
 
 	public RyeDragon(Location loc, World notchWorld) {
 
@@ -163,7 +164,7 @@ public class RyeDragon extends EntityEnderDragon {
 		this.distanceY = this.startY - toY;
 		this.distanceZ = this.startZ - toZ;
 
-		double tick = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY) + (distanceZ * distanceZ)) / DragonTravelMain.speed;
+		double tick = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY) + (distanceZ * distanceZ)) / configSpeed;
 		XperTick = Math.abs(distanceX) / tick;
 		ZperTick = Math.abs(distanceZ) / tick;
 	}
@@ -188,9 +189,9 @@ public class RyeDragon extends EntityEnderDragon {
 
 			// Flying down/up at the end
 			if ((int) locY > (int) toY)
-				myY -= DragonTravelMain.speed;
+				myY -= configSpeed;
 			else if ((int) locY < (int) toY)
-				myY += DragonTravelMain.speed;
+				myY += configSpeed;
 
 			// Removing entity
 			else {
@@ -238,7 +239,7 @@ public class RyeDragon extends EntityEnderDragon {
 
 		// Getting the correct height
 		if ((int) locY < travelY)
-			myY += DragonTravelMain.speed;
+			myY += configSpeed;
 
 		if (myX < toX)
 			myX += XperTick;
@@ -291,7 +292,7 @@ public class RyeDragon extends EntityEnderDragon {
 		this.distanceY = this.startY - nextWaypoint.y;
 		this.distanceZ = this.startZ - nextWaypoint.z;
 
-		double tick = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY) + (distanceZ * distanceZ)) / DragonTravelMain.speed;
+		double tick = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY) + (distanceZ * distanceZ)) / configSpeed;
 
 		this.XperTick = Math.abs(distanceX) / tick;
 		this.YperTick = Math.abs(distanceY) / tick;

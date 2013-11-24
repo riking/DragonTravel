@@ -1,7 +1,6 @@
 File:
     Version: 0.2
 
-    
 ################################
 ####### General Settings #######
 ################################
@@ -144,7 +143,8 @@ RequiredItem:
 # <<< Limit the use of the normal travels to signs >>>
 # This disables the command /dt travel for all players with the admin-permissions.
 # Default: false
-OnlySigns: false
+# ## !!! ## This setting has been REMOVED, due to the more robust permissions system.
+# OnlySigns: false
 
 # <<< Default setting for the ptoggle-flag of a player >>>
 # Choose whether travels to a player are allowed (true) or denied (false) by default

@@ -54,11 +54,6 @@ public class DragonTravelMain extends JavaPlugin {
 	public CustomCommandsManager commands;
 	public CommandHelpTopic help;
 
-	// General
-	public static double speed = 0.5;
-	public static boolean onlysigns = false;
-	public static boolean ptoggleDefault = false;
-
 	// Listeners
 	private EntityListener entityListener;
 	private PlayerListener playerListener;
@@ -66,7 +61,7 @@ public class DragonTravelMain extends JavaPlugin {
 	private FlightEditor flighteditor;
 
 	// Config
-	public static double configVersion = 0.2;
+	public static final double configVersion = 0.2;
 	public static Config config;
 
 	public static File databaseFolder;
@@ -82,12 +77,8 @@ public class DragonTravelMain extends JavaPlugin {
 	public static HashMap<Block, Block> globalwaypointmarkers = new HashMap<Block, Block>();
 	public static HashMap<String, Boolean> ptogglers = new HashMap<String, Boolean>();
 
-	// DragonLimit
-	public static int dragonLimit = 99999;
-
 	// Payment (Costs are directly read from the config/sign on-the-fly)
 	public PaymentManager paymentManager;
-	public static Material paymentItem = Material.GOLD_NUGGET;
 
 	@Override
 	public void onLoad() {
@@ -164,17 +155,6 @@ public class DragonTravelMain extends JavaPlugin {
 		dbFlightsHandler.init();
 
 		CheatProtectionHandler.setup();
-
-		// Load some variables from config
-		speed = Config.config.getDouble("DragonSpeed");
-
-		paymentItem = Material.matchMaterial(Config.config.getString("Payment.Resources.Item", "GOLD_NUGGET"));
-
-		dragonLimit = Config.config.getInt("DragonLimit", 5000);
-
-		onlysigns = Config.config.getBoolean("OnlySigns");
-
-		ptoggleDefault = Config.config.getBoolean("PToggleDefault");
 
 		paymentManager = new PaymentManager(getServer());
 

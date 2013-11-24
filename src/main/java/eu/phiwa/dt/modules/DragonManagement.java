@@ -33,7 +33,7 @@ public class DragonManagement {
 			removeRiderandDragon(dragon.getEntity(), true);
 		}
 
-		if (DragonTravelMain.listofDragonriders.size() >= DragonTravelMain.dragonLimit) {
+		if (DragonTravelMain.listofDragonriders.size() >= Config.getInstance().getDragonLimit()) {
 			if (!player.hasPermission("dt.ignoredragonlimit")) {
 				player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.ReachedDragonLimit"));
 				return false;

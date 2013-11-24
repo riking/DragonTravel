@@ -53,7 +53,7 @@ public class ResourcesPaymentHandler implements PaymentHandler {
 	@SuppressWarnings("deprecation")
 	private boolean removeItems(Player player, int amount) {
 		Inventory inv = player.getInventory();
-		ItemStack item = new ItemStack(DragonTravelMain.paymentItem, amount);
+		ItemStack item = new ItemStack(Config.getInstance().getPaymentMaterial(), amount);
 
 		if (inv.containsAtLeast(item, amount)) {
 			Map<Integer, ItemStack> leftover = inv.removeItem(item);

@@ -45,7 +45,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		DragonTravelMain.ptogglers.put(event.getPlayer().getName(), DragonTravelMain.ptoggleDefault);
+		DragonTravelMain.ptogglers.put(event.getPlayer().getName(), Config.getInstance().getPtoggleDefault());
 	}
 
 

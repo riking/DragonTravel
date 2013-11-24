@@ -88,9 +88,15 @@ public class Config {
 	}
 
 	public String getFileVersion() { return config.getString("File.Version"); }
+	public String getLanguage() { return config.getString("Language"); }
+
 	public boolean shouldAntigriefDTDragons() { return config.getBoolean("AntiGriefDragons.ofDragonTravel"); }
 	public boolean shouldAntigriefAllDragons() { return config.getBoolean("AntiGriefDragons.all"); }
 	public boolean doWorldguardBypass() { return config.getBoolean("AntiGriefDragons.bypassWorldGuardAntiSpawn", true); }
+
+	public boolean getPtoggleDefault() { return config.getBoolean("PToggleDefault"); }
+	public double getSpeed() { return config.getDouble("DragonSpeed", 0.5D); }
+	public int getDragonLimit() { return config.getInt("DragonLimit", 5000); }
 
 	// Payment
 	public boolean usePayment() { return config.getBoolean("Payment.usePayment"); }
@@ -104,5 +110,7 @@ public class Config {
 		return Material.matchMaterial(config.getString("RequiredItem.Item", "DRAGON_EGG"));
 	}
 
-	public String getLanguage() { return config.getString("Language"); }
+	public Material getPaymentMaterial() {
+		return Material.matchMaterial(config.getString("Payment.Resources.Item", "GOLD_NUGGET"));
+	}
 }
