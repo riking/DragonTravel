@@ -57,7 +57,6 @@ public class DragonTravelMain extends JavaPlugin {
 
 	// General
 	public static double speed = 0.5;
-	public static boolean ignoreAntiMobspawnAreas;
 	public static boolean onlysigns = false;
 	public static boolean ptoggleDefault = false;
 
@@ -83,10 +82,6 @@ public class DragonTravelMain extends JavaPlugin {
 	public static HashMap<Player, Location> listofDragonsridersStartingpoints = new HashMap<Player, Location>();
 	public static HashMap<Block, Block> globalwaypointmarkers = new HashMap<Block, Block>();
 	public static HashMap<String, Boolean> ptogglers = new HashMap<String, Boolean>();
-
-	// Dragon Antigrief-Options
-	public static boolean onlydragontraveldragons;
-	public static boolean alldragons;
 
 	// DragonLimit
 	public static int dragonLimit = 99999;
@@ -173,10 +168,6 @@ public class DragonTravelMain extends JavaPlugin {
 		CheatProtectionHandler.setup();
 
 		// Load some variables from config
-		onlydragontraveldragons = config.shouldAntigriefDTDragons();
-		alldragons = config.shouldAntigriefAllDragons();
-		ignoreAntiMobspawnAreas = config.doWorldguardBypass();
-
 		speed = Config.config.getDouble("DragonSpeed");
 
 		paymentItem = Material.matchMaterial(Config.config.getString("Payment.Resources.Item", "GOLD_NUGGET"));

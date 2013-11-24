@@ -29,9 +29,9 @@ public class EntityListener implements Listener {
 		if (!(event.getEntity() instanceof EnderDragon)) {
 			return;
 		}
-		if (DragonTravelMain.config.shouldAntigriefAllDragons()) {
+		if (Config.getInstance().shouldAntigriefAllDragons()) {
 			event.setCancelled(true);
-		} else if (DragonTravelMain.config.shouldAntigriefDTDragons() && event.getEntity() instanceof RyeDragon) {
+		} else if (Config.getInstance().shouldAntigriefDTDragons() && event.getEntity() instanceof RyeDragon) {
 			event.setCancelled(true);
 		}
 	}
@@ -64,7 +64,7 @@ public class EntityListener implements Listener {
 		DragonTravelMain.listofDragonriders.remove(player);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (event.getSpawnReason() != SpawnReason.CUSTOM)
 			return;
@@ -75,7 +75,7 @@ public class EntityListener implements Listener {
 		if (!event.isCancelled())
 			return;
 
-		if (DragonTravelMain.ignoreAntiMobspawnAreas == true)
+		if (Config.getInstance().doWorldguardBypass() == true)
 			event.setCancelled(false);
 	}
 }
