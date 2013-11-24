@@ -10,7 +10,6 @@ import net.minecraft.server.v1_6_R3.World;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import eu.phiwa.dt.filehandlers.Config;
@@ -62,7 +61,6 @@ public class RyeDragon extends EntityEnderDragon {
 
 	Location start;
 	Location spawnOtherWorld;
-	Entity bukkitDragon;
 	Player bukkitRider;
 
 	private final double configSpeed = Config.getInstance().getSpeed();
@@ -97,13 +95,6 @@ public class RyeDragon extends EntityEnderDragon {
 
 	public RyeDragon(World world) {
 		super(world);
-	}
-
-	public Entity getEntity() {
-		if (bukkitEntity != null)
-			return bukkitEntity;
-		else
-			return bukkitDragon;
 	}
 
 
@@ -141,7 +132,6 @@ public class RyeDragon extends EntityEnderDragon {
 			travelY = Config.config.getInt("TravelHeight");
 		}
 
-		this.bukkitDragon = this.getBukkitEntity();
 		this.bukkitRider = (Player) this.passenger.getBukkitEntity();
 
 		isTravel = true;
@@ -173,7 +163,7 @@ public class RyeDragon extends EntityEnderDragon {
 		if (!move)
 			return;
 
-		if (bukkitDragon.getPassenger() == null)
+		if (getBukkitEntity().getPassenger() == null)
 			return;
 
 		double myX = locX;
@@ -192,8 +182,8 @@ public class RyeDragon extends EntityEnderDragon {
 			else {
 
 				// Interworld-travel teleport
-				if (!bukkitDragon.getWorld().equals(toWorld)) {
-					this.bukkitRider = (Player) bukkitDragon.getPassenger();
+				if (!world.getWorld().equals(toWorld)) {
+					this.bukkitRider = (Player) passenger.getBukkitEntity();
 
 					spawnOtherWorld = destlocOtherworld.clone();
 					spawnOtherWorld.setX(destlocOtherworld.getX() + 80);
@@ -217,13 +207,13 @@ public class RyeDragon extends EntityEnderDragon {
 							bukkitRider.setFlying(false);
 							RyeDragon dragon = DragonTravelMain.listofDragonriders.get(bukkitRider);
 							dragon.startTravel(destlocOtherworld, false);
-							bukkitDragon.remove();
+							getBukkitEntity().remove();
 						}
 					}, 1L);
 
 					// Dismount
 				} else {
-					DragonManagement.removeRiderandDragon(bukkitDragon, true);
+					DragonManagement.removeRiderandDragon(getBukkitEntity(), true);
 					return;
 				}
 			}
@@ -260,7 +250,6 @@ public class RyeDragon extends EntityEnderDragon {
 	 * @param flight Flight to start
 	 */
 	public void startFlight(Flight flight) {
-		this.bukkitDragon = this.getBukkitEntity();
 		this.bukkitRider = (Player) this.passenger.getBukkitEntity();
 
 		this.waypoints = flight.waypoints;
@@ -349,11 +338,11 @@ public class RyeDragon extends EntityEnderDragon {
 
 			if (currentindexWaypoint == numberOfWaypoints) {
 				try {
-					DragonManagement.removeRiderandDragon(bukkitDragon, new Location(bukkitDragon.getWorld(), nextWaypoint.x, nextWaypoint.y, nextWaypoint.z, ((Player) bukkitDragon.getPassenger()).getLocation().getYaw(), ((Player) bukkitDragon.getPassenger()).getLocation().getPitch()));
+					DragonManagement.removeRiderandDragon(getBukkitEntity(), new Location(world.getWorld(), nextWaypoint.x, nextWaypoint.y, nextWaypoint.z, ((Player) passenger.getBukkitEntity()).getLocation().getYaw(), ((Player) passenger.getBukkitEntity()).getLocation().getPitch()));
 					return;
 
 				} catch (NullPointerException ex) {
-					DragonManagement.removeRiderandDragon(bukkitDragon, new Location(bukkitDragon.getWorld(), nextWaypoint.x, nextWaypoint.y, nextWaypoint.z));
+					DragonManagement.removeRiderandDragon(getBukkitEntity(), new Location(world.getWorld(), nextWaypoint.x, nextWaypoint.y, nextWaypoint.z));
 					return;
 				}
 			}
@@ -378,7 +367,6 @@ public class RyeDragon extends EntityEnderDragon {
 	}
 
 	public void startFreeFlight() {
-		this.bukkitDragon = this.getBukkitEntity();
 		this.bukkitRider = (Player) this.passenger.getBukkitEntity();
 
 		this.isFreeFlight = true;
@@ -412,7 +400,7 @@ public class RyeDragon extends EntityEnderDragon {
 		boolean requestedSneak = false;
 		// Reattach player to the dragon
 		if (passenger == null) {
-			bukkitDragon.setPassenger(bukkitRider);
+			getBukkitEntity().setPassenger(bukkitRider);
 			requestedSneak = true;
 		}
 
@@ -706,9 +694,9 @@ public class RyeDragon extends EntityEnderDragon {
 	@Override
 	public void c() {
 
-		if (bukkitDragon != null && bukkitRider != null) {
-			if (bukkitDragon.getPassenger() != null) {
-				bukkitDragon.setPassenger(bukkitRider);
+		if (getBukkitEntity() != null && bukkitRider != null) {
+			if (getBukkitEntity().getPassenger() != null) {
+				getBukkitEntity().setPassenger(bukkitRider);
 				// TODO why?
 			}
 		}

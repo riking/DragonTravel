@@ -60,7 +60,7 @@ public class EntityListener implements Listener {
 			return;
 
 		RyeDragon dragon = DragonTravelMain.listofDragonriders.get(player);
-		dragon.getEntity().remove();
+		dragon.getBukkitEntity().remove();
 		DragonTravelMain.listofDragonriders.remove(player);
 	}
 

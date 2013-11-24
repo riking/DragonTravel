@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
+import eu.phiwa.dt.BukkitRyeDragon;
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.RyeDragon;
 import eu.phiwa.dt.anticheatplugins.CheatProtectionHandler;
@@ -30,7 +31,7 @@ public class DragonManagement {
 		// Remove current dragon if the player is already mounted
 		if (DragonTravelMain.listofDragonriders.containsKey(player)) {
 			RyeDragon dragon = DragonTravelMain.listofDragonriders.get(player);
-			removeRiderandDragon(dragon.getEntity(), true);
+			removeRiderandDragon(dragon.getBukkitEntity(), true);
 		}
 
 		if (DragonTravelMain.listofDragonriders.size() >= Config.getInstance().getDragonLimit()) {
@@ -44,7 +45,7 @@ public class DragonManagement {
 		World craftWorld = ((CraftWorld) player.getWorld()).getHandle();
 		RyeDragon ryeDragon = new RyeDragon(player.getLocation(), craftWorld);
 		craftWorld.addEntity(ryeDragon, SpawnReason.CUSTOM);
-		LivingEntity dragon = (LivingEntity) ryeDragon.getEntity();
+		BukkitRyeDragon dragon = ryeDragon.getBukkitEntity();
 
 		CheatProtectionHandler.exemptPlayerFromCheatChecks(player);
 		dragon.setPassenger(player);
@@ -71,9 +72,9 @@ public class DragonManagement {
 
 		RyeDragon dragon = DragonTravelMain.listofDragonriders.get(player);
 		if (interworldtravel)
-			removeRiderandDragon(dragon.getEntity(), (Boolean) null);
+			removeRiderandDragon(dragon.getBukkitEntity(), (Boolean) null);
 		else
-			removeRiderandDragon(dragon.getEntity(), false);
+			removeRiderandDragon(dragon.getBukkitEntity(), false);
 	}
 
 	/**
@@ -233,7 +234,7 @@ public class DragonManagement {
 		// and hasn't been mounted again yet by the scheduler
 		// => Get the player using the "scheduler-method"
 		for (Entry<Player, RyeDragon> entry : DragonTravelMain.listofDragonriders.entrySet()) {
-			if (entry.getValue().getEntity() == entity) {
+			if (entry.getValue().getBukkitEntity() == entity) {
 				player = entry.getKey();
 				break;
 			}

@@ -40,7 +40,7 @@ public class PlayerListener implements Listener {
 
 		DragonTravelMain.ptogglers.remove(player.getName());
 
-		DragonManagement.removeRiderandDragon(DragonTravelMain.listofDragonriders.get((player)).getEntity(), false);
+		DragonManagement.removeRiderandDragon(DragonTravelMain.listofDragonriders.get((player)).getBukkitEntity(), false);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
