@@ -10,7 +10,7 @@ public enum ChargeType {
 	TRAVEL_TOHOME("dt.nocost.home", "toHome"),
 	TRAVEL_TOFACTIONHOME("dt.nocost.fhome", "toFactionhome"),
 	FLIGHT("dt.nocost.flight", "Flight"),
-	SETHOME("dt.nocost.home.set", null),
+	SETHOME("dt.nocost.home.set", "setHome"),
 	;
 
 	private String noCostPermission;

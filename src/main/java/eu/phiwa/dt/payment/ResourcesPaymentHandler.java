@@ -20,7 +20,7 @@ public class ResourcesPaymentHandler implements PaymentHandler {
 
 	@Override
 	public boolean setup() {
-		return DragonTravelMain.byResources;
+		return Config.getInstance().usePayment() && Config.getInstance().useResources();
 	}
 
 	@Override
@@ -35,35 +35,7 @@ public class ResourcesPaymentHandler implements PaymentHandler {
 			return true;
 		}
 
-		int amount;
-		switch (type) {
-		case TRAVEL_TOSTATION:
-			amount = Config.config.getInt("Payment.Resources.Prices.toStation");
-			break;
-		case TRAVEL_TORANDOM:
-			amount = Config.config.getInt("Payment.Resources.Prices.toRandom");
-			break;
-		case TRAVEL_TOPLAYER:
-			amount = Config.config.getInt("Payment.Resources.Prices.toPlayer");
-			break;
-		case TRAVEL_TOCOORDINATES:
-			amount = Config.config.getInt("Payment.Resources.Prices.toCoordinates");
-			break;
-		case TRAVEL_TOHOME:
-			amount = Config.config.getInt("Payment.Resources.Prices.toHome");
-			break;
-		case TRAVEL_TOFACTIONHOME:
-			amount = Config.config.getInt("Payment.Resources.Prices.toFactionhome");
-			break;
-		case SETHOME:
-			amount = Config.config.getInt("Payment.Resources.Prices.setHome");
-			break;
-		case FLIGHT:
-			amount = Config.config.getInt("Payment.Resources.Prices.Flight");
-			break;
-		default:
-			throw new UnsupportedOperationException("ResourcesPaymentHandler doesn't know how to deal with a ChargeType of " + type.name() + ". Fix immediately!");
-		}
+		int amount = Config.getInstance().getResourcePrice(type);
 
 		return removeItems(player, amount);
 	}

@@ -19,7 +19,12 @@ public class PaymentManager {
 	 * eu.phiwa.dt.payment.PaymentManager.availableHandlers.add(0, MyPaymentHandler.class);
 	 * </pre>
 	 *
-	 * The code must run before DragonTravel's onEnable().
+	 * The code must run before DragonTravel's onEnable(), so do it either in
+	 * your onLoad() or include this in your plugin.yml:
+	 *
+	 * <pre>
+	 * loadbefore: [DragonTravel]
+	 * </pre>
 	 */
 	public static List<Class<? extends PaymentHandler>> availableHandlers = Lists.newArrayListWithCapacity(3);
 

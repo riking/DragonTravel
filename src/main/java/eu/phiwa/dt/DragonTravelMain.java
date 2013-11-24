@@ -93,9 +93,6 @@ public class DragonTravelMain extends JavaPlugin {
 
 	// Payment (Costs are directly read from the config/sign on-the-fly)
 	public PaymentManager paymentManager;
-	public static boolean usePayment = false;
-	public static boolean byEconomy = false;
-	public static boolean byResources = false;
 	public static Material paymentItem = Material.GOLD_NUGGET;
 
 	@Override
@@ -187,14 +184,6 @@ public class DragonTravelMain extends JavaPlugin {
 		onlysigns = Config.config.getBoolean("OnlySigns");
 
 		ptoggleDefault = Config.config.getBoolean("PToggleDefault");
-
-		usePayment = Config.config.getBoolean("Payment.usePayment");
-		byEconomy = Config.config.getBoolean("Payment.byEconomy");
-		byResources = Config.config.getBoolean("Payment.byResources");
-
-		if (byEconomy && byResources) {
-			getLogger().severe("Both Payment.byEconomy and Payment.byResources are set to true. Attempting Economy first..");
-		}
 
 		paymentManager = new PaymentManager(getServer());
 

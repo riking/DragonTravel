@@ -16,9 +16,8 @@ public class EconomyPaymentHandler implements PaymentHandler {
 
 	@Override
 	public boolean setup() {
-		if (DragonTravelMain.byEconomy == false) {
-			// Don't try
-			return false;
+		if (!Config.getInstance().usePayment() || !Config.getInstance().useEcon()) {
+			return false; // disabled
 		}
 
 		RegisteredServiceProvider<Economy> economyRSP = DragonTravelMain.plugin.getServer().getServicesManager().getRegistration(Economy.class);
@@ -37,41 +36,12 @@ public class EconomyPaymentHandler implements PaymentHandler {
 
 	@Override
 	public boolean chargePlayer(ChargeType type, Player player) {
-
 		if (type.hasNoCostPermission(player)) {
 			player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Payment.Free"));
 			return true;
 		}
 
-		double amount;
-		switch (type) {
-		case TRAVEL_TOSTATION:
-			amount = Config.config.getDouble("Payment.Economy.Prices.toStation");
-			break;
-		case TRAVEL_TORANDOM:
-			amount = Config.config.getDouble("Payment.Economy.Prices.toRandom");
-			break;
-		case TRAVEL_TOPLAYER:
-			amount = Config.config.getDouble("Payment.Economy.Prices.toPlayer");
-			break;
-		case TRAVEL_TOCOORDINATES:
-			amount = Config.config.getDouble("Payment.Economy.Prices.toCoordinates");
-			break;
-		case TRAVEL_TOHOME:
-			amount = Config.config.getDouble("Payment.Economy.Prices.toHome");
-			break;
-		case TRAVEL_TOFACTIONHOME:
-			amount = Config.config.getDouble("Payment.Economy.Prices.toFactionhome");
-			break;
-		case SETHOME:
-			amount = Config.config.getDouble("Payment.Economy.Prices.setHome");
-			break;
-		case FLIGHT:
-			amount = Config.config.getDouble("Payment.Economy.Prices.Flight");
-			break;
-		default:
-			throw new UnsupportedOperationException("EconomyPaymentHandler doesn't know how to deal with a ChargeType of " + type.name() + ". Fix immediately!");
-		}
+		double amount = Config.getInstance().getEconPrice(type);
 
 		return subtractBalance(player, amount);
 	}
