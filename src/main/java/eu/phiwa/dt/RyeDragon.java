@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
 import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.flights.Waypoint;
 import eu.phiwa.dt.modules.DragonManagement;
@@ -66,8 +67,15 @@ public class RyeDragon extends EntityEnderDragon {
 
 	private final double configSpeed = Config.getInstance().getSpeed();
 
-	public RyeDragon(Location loc, World notchWorld) {
+	@Override
+	public BukkitRyeDragon getBukkitEntity() {
+		if (this.bukkitEntity == null) {
+			this.bukkitEntity = new BukkitRyeDragon(this.world.getServer(), this);
+		}
+		return (BukkitRyeDragon) this.bukkitEntity;
+	}
 
+	public RyeDragon(Location loc, World notchWorld) {
 		super(notchWorld);
 
 		this.start = loc;
