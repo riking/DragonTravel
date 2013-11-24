@@ -35,7 +35,7 @@ public class Messages {
 		language = Config.getInstance().getLanguage();
 
 		if (language == null) {
-			DragonTravelMain.logger.severe("Could not load messages-file because the language could not be read from the config! Disabling plugin!");
+			plugin.severe("Could not load messages-file because the language could not be read from the config! Disabling plugin!");
 			new RuntimeException("No language set").printStackTrace();
 
 			return false;
@@ -62,7 +62,6 @@ public class Messages {
 
 		// Refresh file and config variables for persistence.
 		try {
-			messagesFile = new File(plugin.getDataFolder(), "messages-" + language + ".yml");
 			messages.save(messagesFile);
 			messages = YamlConfiguration.loadConfiguration(messagesFile);
 		} catch (IOException e) {
@@ -85,55 +84,23 @@ public class Messages {
 		// DragonTravelMain.config.set("example key", null);
 	}
 
-
-	private void deployDefaultFile(String name) {
-		try {
-			File target = new File(this.plugin.getDataFolder(), name);
-			InputStream source = this.plugin.getResource("eu/phiwa/dt/filehandlers/messages/" + name);
-
-			if (!target.exists()) {
-				OutputStream output = new FileOutputStream(target);
-				byte[] buffer = new byte[1024];
-				int len;
-				while ((len = source.read(buffer)) > 0)
-					output.write(buffer, 0, len);
-				output.close();
-			}
-			source.close();
-			DragonTravelMain.logger.info("Deployed " + name);
-		} catch (Exception e) {
-			DragonTravelMain.logger.severe("Could not save default file");
-		}
-	}
-
-
 	public String getMessage(String path) {
-
-		String message;
-
-		message = replaceColors(messages.getString(path));
+		String message = messages.getString(path);
 
 		if (message == null) {
-			DragonTravelMain.logger.severe("Missing translation: '" + path + "' -- need to regenerate?");
+			plugin.severe("Missing translation: '" + path + "' -- need to regenerate?");
 			return replaceColors("&cAn error occured, please contact the admin!");
 		}
 
-		if (message.length() == 0)
-			return ChatColor.RED + "Error, could not read message-text from file, please contact the admin.";
+		if (message.length() == 0) {
+			plugin.severe("Empty translation: '" + path + "' -- need to regenerate?");
+			return replaceColors("&cAn error occured, please contact the admin!");
+		}
 
-		return message;
+		return replaceColors(message);
 	}
 
 	private String replaceColors(String string) {
-
-		String formattedMessage = null;
-
-		try {
-			formattedMessage = string.replaceAll("(?i)&([a-f0-9])", "\u00A7$1");
-		} catch (Exception ex) {
-			DragonTravelMain.logger.warning("Could not read a message from the messages-xx.yml!");
-		}
-
-		return formattedMessage;
+		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 }

@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.Station;
+import eu.phiwa.dt.util.Utils;
 
 public class StationsDB {
 	@SuppressWarnings("unused")
@@ -35,7 +36,7 @@ public class StationsDB {
 		try {
 			create();
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not initialize the stations-database.");
+			plugin.warning("Could not initialize the stations-database.");
 			e.printStackTrace();
 		}
 
@@ -49,43 +50,24 @@ public class StationsDB {
 	}
 
 	private void create() {
-
 		if (dbStationsFile.exists())
 			return;
 
 		try {
 			dbStationsFile.createNewFile();
-			copy(getClass().getResourceAsStream("stations.yml"), dbStationsFile);
-			DragonTravelMain.logger.info("Created stations-database.");
+			Utils.deployDefaultFile("databases/stations.yml", plugin);
+			plugin.info("Created stations-database.");
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not create the stations-database!");
-			e.printStackTrace();
-		}
-
-
-	}
-
-	private void copy(InputStream in, File file) {
-
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) != -1)
-				out.write(buf, 0, len);
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+			plugin.warning("Could not create the stations-database!");
 		}
 	}
 
 	private void load() {
 		try {
 			dbStationsConfig.load(dbStationsFile);
-			DragonTravelMain.logger.info("Loaded stations-database.");
+			plugin.info("Loaded stations-database.");
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("No stations-database found");
+			plugin.warning("No stations-database found");
 			e.printStackTrace();
 		}
 	}
@@ -127,7 +109,7 @@ public class StationsDB {
 			dbStationsConfig.save(dbStationsFile);
 			return true;
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not write new station to config.");
+			plugin.warning("Could not write new station to config.");
 			return false;
 		}
 	}
@@ -145,7 +127,7 @@ public class StationsDB {
 			dbStationsConfig.save(dbStationsFile);
 			return true;
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not delete station from config.");
+			plugin.warning("Could not delete station from config.");
 			return false;
 		}
 	}
@@ -178,7 +160,7 @@ public class StationsDB {
 				String worldname = dbStationsConfig.getString(pathToStation + ".world");
 
 				if (worldname == null) {
-					DragonTravelMain.logger.severe("The world of the station " + dbStationsConfig.getString(pathToStation + ".displayname") + " could not be read from the database, please check it for errors!");
+					plugin.severe("The world of the station " + dbStationsConfig.getString(pathToStation + ".displayname") + " could not be read from the database, please check it for errors!");
 					player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.General.Error.DatabaseCorrupted"));
 					return false;
 				}
@@ -186,7 +168,7 @@ public class StationsDB {
 				world = Bukkit.getWorld(worldname);
 
 				if (world == null) {
-					DragonTravelMain.logger.severe("Skipping station '" + dbStationsConfig.getString(pathToStation + ".displayname") + "' while checking for a station. There is no world '" + dbStationsConfig.getString(pathToStation + ".world") + "' on the server!");
+					plugin.severe("Skipping station '" + dbStationsConfig.getString(pathToStation + ".displayname") + "' while checking for a station. There is no world '" + dbStationsConfig.getString(pathToStation + ".world") + "' on the server!");
 					continue;
 				}
 

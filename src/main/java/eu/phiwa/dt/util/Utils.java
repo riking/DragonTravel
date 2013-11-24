@@ -13,7 +13,7 @@ public class Utils {
 		try {
 			File target = new File(plugin.getDataFolder(), name);
 			InputStream source = plugin.getResource(name);
-	
+
 			if (!target.exists()) {
 				OutputStream output = new FileOutputStream(target);
 				byte[] buffer = new byte[1024];
@@ -23,9 +23,9 @@ public class Utils {
 				output.close();
 			}
 			source.close();
-			DragonTravelMain.logger.info("Deployed " + name);
+			plugin.info("Deployed " + name);
 		} catch (Exception e) {
-			DragonTravelMain.logger.info("Could not save default file");
+			plugin.warning("Could not save default file for " + name);
 		}
 	}
 

@@ -16,6 +16,7 @@ import com.sk89q.minecraft.util.commands.ChatColor;
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.Flight;
 import eu.phiwa.dt.permissions.PermissionsHandler;
+import eu.phiwa.dt.util.Utils;
 
 public class FlightsDB {
 	@SuppressWarnings("unused")
@@ -35,7 +36,7 @@ public class FlightsDB {
 		try {
 			create();
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not initialize the flights-database.");
+			plugin.warning("Could not initialize the flights-database.");
 			e.printStackTrace();
 		}
 
@@ -55,37 +56,21 @@ public class FlightsDB {
 
 		try {
 			dbFlightsFile.createNewFile();
-			copy(getClass().getResourceAsStream("flights.yml"), dbFlightsFile);
-			DragonTravelMain.logger.info("Created flights-database.");
+			Utils.deployDefaultFile("databases/flights.yml", plugin);
+			plugin.info("Created flights-database.");
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not create the flights-database!");
+			plugin.warning("Could not create the flights-database!");
 		}
 
 
-	}
-
-	private void copy(InputStream in, File file) {
-
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) != -1) {
-				out.write(buf, 0, len);
-			}
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void load() {
 		try {
 			dbFlightsConfig.load(dbFlightsFile);
-			DragonTravelMain.logger.info("Loaded flights-database.");
+			plugin.info("Loaded flights-database.");
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("No flights-database found");
+			plugin.warning("No flights-database found");
 		}
 	}
 
@@ -130,7 +115,7 @@ public class FlightsDB {
 			dbFlightsConfig.save(dbFlightsFile);
 			return true;
 		} catch (Exception e) {
-			DragonTravelMain.logger.info("[DragonTravel] [Error] Could not write new flight to config.");
+			plugin.warning("Could not write new flight to config.");
 			return false;
 		}
 	}
@@ -148,7 +133,7 @@ public class FlightsDB {
 			dbFlightsConfig.save(dbFlightsFile);
 			return true;
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not delete flight from config.");
+			plugin.warning("Could not delete flight from config.");
 			return false;
 		}
 	}

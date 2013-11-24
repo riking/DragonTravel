@@ -20,12 +20,12 @@ public class EconomyPaymentHandler implements PaymentHandler {
 			return false; // disabled
 		}
 
-		RegisteredServiceProvider<Economy> economyRSP = DragonTravelMain.plugin.getServer().getServicesManager().getRegistration(Economy.class);
+		RegisteredServiceProvider<Economy> economyRSP = Bukkit.getServicesManager().getRegistration(Economy.class);
 		if (economyRSP != null) {
 			economyProvider = economyRSP.getProvider();
 			return true;
 		}
-		DragonTravelMain.logger.severe("You enabled economy in the config, but DragonTravel could not find a Vault economy provider. :(");
+		DragonTravelMain.plugin.severe("You enabled economy in the config, but DragonTravel could not find a Vault economy provider. :(");
 		return false;
 	}
 

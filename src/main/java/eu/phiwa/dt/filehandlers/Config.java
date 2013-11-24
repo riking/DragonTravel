@@ -60,13 +60,14 @@ public class Config {
 			newlyRequiredConfig();
 		}
 		noLongerRequiredConfig();
+
 		// Refresh file and config variables for persistence.
 		try {
 			config.save(configFile);
 			config = YamlConfiguration.loadConfiguration(configFile);
 		} catch (IOException e) {
 			e.printStackTrace();
-			DragonTravelMain.logger.severe("Could not update config, disabling plugin!");
+			plugin.severe("Could not update config, disabling plugin!");
 		}
 	}
 

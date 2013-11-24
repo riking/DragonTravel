@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import eu.phiwa.dt.DragonTravelMain;
 import eu.phiwa.dt.Home;
+import eu.phiwa.dt.util.Utils;
 
 public class HomesDB {
 	@SuppressWarnings("unused")
@@ -31,7 +32,7 @@ public class HomesDB {
 		try {
 			create();
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not initialize the homes-database.");
+			plugin.warning("Could not initialize the homes-database.");
 			e.printStackTrace();
 		}
 
@@ -45,43 +46,24 @@ public class HomesDB {
 	}
 
 	private void create() {
-
 		if (dbHomesFile.exists())
 			return;
 
 		try {
 			dbHomesFile.createNewFile();
-			copy(getClass().getResourceAsStream("homes.yml"), dbHomesFile);
-			DragonTravelMain.logger.info("Created homes-database.");
+			Utils.deployDefaultFile("databases/homes.yml", plugin);
+			plugin.info("Created homes-database.");
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not create the homes-database!");
-		}
-
-
-	}
-
-	private void copy(InputStream in, File file) {
-
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) != -1) {
-				out.write(buf, 0, len);
-			}
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+			plugin.warning("Could not create the homes-database!");
 		}
 	}
 
 	private void load() {
 		try {
 			dbHomesConfig.load(dbHomesFile);
-			DragonTravelMain.logger.info("Loaded homes-database.");
+			plugin.info("Loaded homes-database.");
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("No homes-database found");
+			plugin.warning("No homes-database found");
 			e.printStackTrace();
 		}
 	}
@@ -123,7 +105,7 @@ public class HomesDB {
 			dbHomesConfig.save(dbHomesFile);
 			return true;
 		} catch (Exception e) {
-			DragonTravelMain.logger.info("Could not write new home to config.");
+			plugin.warning("Could not write new home to config.");
 			return false;
 		}
 	}
@@ -144,7 +126,7 @@ public class HomesDB {
 			dbHomesConfig.save(dbHomesFile);
 			return true;
 		} catch (Exception e) {
-			DragonTravelMain.logger.warning("Could not delete home from config.");
+			plugin.warning("Could not delete home from config.");
 			return false;
 		}
 	}

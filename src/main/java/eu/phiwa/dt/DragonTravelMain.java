@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -47,9 +48,7 @@ import eu.phiwa.dt.payment.PaymentManager;
 
 
 public class DragonTravelMain extends JavaPlugin {
-
 	public static DragonTravelMain plugin;
-	public static Logger logger;
 
 	// Commands
 	public CustomCommandsManager commands;
@@ -112,13 +111,12 @@ public class DragonTravelMain extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		PluginManager pm = getServer().getPluginManager();
-		logger = getLogger();
 		plugin = this;
 
 		// Initialize Config
 		config = new Config(this);
 		if (!config.loadConfig()) {
-			logger.log(Level.SEVERE, "Could not initialize config! Please fix the problems described above and restart the server.");
+			severe("Could not initialize config! Please fix the problems described above and restart the server.");
 			pm.disablePlugin(this);
 			return;
 		}
@@ -180,7 +178,7 @@ public class DragonTravelMain extends JavaPlugin {
 
 		paymentManager = new PaymentManager(getServer());
 
-		getLogger().info(ChatColor.stripColor(String.format("Payment set up using '%s'.", paymentManager.handler.toString())));
+		log("Payment set up using '%s'.", paymentManager.handler.toString());
 
 		getServer().getHelpMap().addTopic((help = new CommandHelpTopic("DragonTravel")));
 		getServer().getHelpMap().addTopic(new CommandHelpTopic("/dt"));
@@ -191,10 +189,43 @@ public class DragonTravelMain extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		// TODO colored output
-		logger.log(Level.SEVERE, String.format("[DragonTravel] -----------------------------------------------"));
-		logger.log(Level.SEVERE, String.format("[DragonTravel] Successfully disabled %s %s", getDescription().getName(), getDescription().getVersion()));
-		logger.log(Level.SEVERE, String.format("[DragonTravel] -----------------------------------------------"));
+		log("-----------------------------------------------");
+		log("Disabled &a%s %s", getDescription().getName(), getDescription().getVersion());
+		log("-----------------------------------------------");
+	}
+
+	private ConsoleCommandSender console;
+	public void log(String str) {
+		if (console == null && getServer().getConsoleSender() != null) {
+			// setup
+			console = getServer().getConsoleSender();
+		}
+
+		if (console != null) {
+			console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b[DragonTravel]&f " + str));
+		} else {
+			getLogger().info(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', str)));
+		}
+	}
+
+	public void log(String format, Object... args) {
+		log(String.format(format, args));
+	}
+
+	public void severe(String msg) {
+		log(ChatColor.RED + msg);
+	}
+
+	public void warning(String msg) {
+		log(ChatColor.YELLOW + msg);
+	}
+
+	public void good(String msg) {
+		log(ChatColor.GREEN + msg);
+	}
+
+	public void info(String msg) {
+		log(ChatColor.AQUA + msg);
 	}
 
 	private boolean registerEntity() {
@@ -229,7 +260,7 @@ public class DragonTravelMain extends JavaPlugin {
 				e.addSuppressed(ex);
 			}
 
-			logger.severe("Could not register the RyeDragon-entity! Please check for updates to DragonTravel.");
+			severe("Could not register the RyeDragon-entity! Please check for updates to DragonTravel.");
 			e.printStackTrace();
 			return false;
 		}
@@ -237,38 +268,33 @@ public class DragonTravelMain extends JavaPlugin {
 
 
 	public void reload() {
+		warning("Reloading all files.");
+		warning("WE RECOMMEND NOT TO DO THIS BECAUSE IT MIGHT CAUSE SERIUOS PROBLEMS!");
+		warning("SIMPLY RESTART YOUR SERVER INSTEAD; THAT'S MUCH SAFER!");
 
-		logger.info("Reloading all files.");
-		logger.info("WE RECOMMEND NOT TO DO THIS BECAUSE IT MIGHT CAUSE SERIUOS PROBLEMS!");
-		logger.info("SIMPLY RESTART YOUR SERVER INSTEAD; THAT'S MUCH SAFER!");
+		// Drop old data
+		Config.config = null;
 
 		// Config
-		config.loadConfig();
-		if (Config.config.getString("File.Version") == null) {
-			logger.severe("Could not initialize config! Disabling the plugin!");
-			this.getPluginLoader().disablePlugin(this);
-			return;
-		} else
-			logger.info("Config loaded successfully.");
+		config = new Config(this);
 
+		if (!config.loadConfig()) {
+			severe("Could not initialize config! Disabling the plugin!");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		} else {
+			info("Config loaded successfully.");
+		}
 
 		// Messages-file
 		if (!messagesHandler.loadMessages())
 			return;
 
-		// StationsDB
 		dbStationsHandler.init();
-
-
-		// HomesDB
 		dbHomesHandler.init();
-
-
-		// StationsDB
 		dbFlightsHandler.init();
 
-
-		logger.info("Successfully reloaded all files.");
+		good("Successfully reloaded all files.");
 	}
 
 
