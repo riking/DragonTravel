@@ -559,6 +559,7 @@ public final class DragonTravelCommands {
 		player.sendMessage(DragonTravelMain.messagesHandler.getMessage("Messages.Flights.Successful.FlightSaved"));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Command(aliases = {"setwp"},
 			desc = "Set a waypoint for the flight",
 			usage = "[x y z]",

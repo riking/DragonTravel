@@ -1,9 +1,6 @@
 package eu.phiwa.dt.filehandlers;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,7 +16,6 @@ import eu.phiwa.dt.Station;
 import eu.phiwa.dt.util.Utils;
 
 public class StationsDB {
-	@SuppressWarnings("unused")
 	private DragonTravelMain plugin;
 	private File dbStationsFile;
 	private FileConfiguration dbStationsConfig;

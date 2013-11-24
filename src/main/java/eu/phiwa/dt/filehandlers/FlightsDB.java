@@ -1,10 +1,6 @@
 package eu.phiwa.dt.filehandlers;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,7 +15,6 @@ import eu.phiwa.dt.permissions.PermissionsHandler;
 import eu.phiwa.dt.util.Utils;
 
 public class FlightsDB {
-	@SuppressWarnings("unused")
 	private DragonTravelMain plugin;
 	private File dbFlightsFile;
 	private FileConfiguration dbFlightsConfig;

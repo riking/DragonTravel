@@ -5,26 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.server.v1_6_R3.AxisAlignedBB;
-import net.minecraft.server.v1_6_R3.Block;
-import net.minecraft.server.v1_6_R3.CrashReport;
-import net.minecraft.server.v1_6_R3.CrashReportSystemDetails;
-import net.minecraft.server.v1_6_R3.EntityHuman;
-import net.minecraft.server.v1_6_R3.MathHelper;
-import net.minecraft.server.v1_6_R3.ReportedException;
 import net.minecraft.server.v1_6_R3.EntityEnderDragon;
-import net.minecraft.server.v1_6_R3.EntityLiving;
 import net.minecraft.server.v1_6_R3.World;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
-
 import eu.phiwa.dt.filehandlers.Config;
 import eu.phiwa.dt.flights.Waypoint;
 import eu.phiwa.dt.modules.DragonManagement;
@@ -479,13 +466,11 @@ public class RyeDragon extends EntityEnderDragon {
 		this.bounceMove(motX, motY, motZ);
 
 		// ACTUALLY MOVING
-		AxisAlignedBB original = this.boundingBox;
 		this.boundingBox.shrink(3D, 1D, 3D);
 		this.move(motX, motY, motZ);
 		this.boundingBox.grow(3D, 1D, 3D);
 	}
 
-	private int private_c;
 	private void bounceMove(double d0, double d1, double d2) {
 		this.X *= 0.4F;
 		double d3 = this.locX;

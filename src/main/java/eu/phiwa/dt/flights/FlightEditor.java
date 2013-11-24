@@ -32,6 +32,7 @@ public class FlightEditor implements Listener {
 			editors.put(player, new Flight(player.getWorld(), flightname));
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean removeEditor(Player player) {
 		Flight flight = editors.remove(player);
 		if (flight == null) return false;

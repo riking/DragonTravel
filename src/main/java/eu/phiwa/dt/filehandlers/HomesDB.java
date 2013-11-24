@@ -1,9 +1,6 @@
 package eu.phiwa.dt.filehandlers;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,7 +12,6 @@ import eu.phiwa.dt.Home;
 import eu.phiwa.dt.util.Utils;
 
 public class HomesDB {
-	@SuppressWarnings("unused")
 	private DragonTravelMain plugin;
 	private File dbHomesFile;
 	private FileConfiguration dbHomesConfig;

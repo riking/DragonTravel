@@ -57,6 +57,7 @@ public class Flight implements ConfigurationSerializable {
 		waypoints.add(wp);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void removelastWaypoint(Player player) {
 		// Remove marker from waypoint
 		Waypoint tmp = waypoints.get(waypoints.size() - 1);

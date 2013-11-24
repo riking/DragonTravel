@@ -5,15 +5,11 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.minecraft.server.v1_6_R3.EntityTypes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -43,7 +39,6 @@ import eu.phiwa.dt.listeners.BlockListener;
 import eu.phiwa.dt.listeners.EntityListener;
 import eu.phiwa.dt.listeners.PlayerListener;
 import eu.phiwa.dt.modules.MountingScheduler;
-import eu.phiwa.dt.payment.ChargeType;
 import eu.phiwa.dt.payment.PaymentManager;
 
 
